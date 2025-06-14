@@ -23,16 +23,17 @@
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #3498db;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: white;
+  flex-shrink: 0;
 }
 
 .user-info {
@@ -48,10 +49,11 @@
   line-height: 1.2;
 }
 
-.user-role {
+.user-dropdown .user-role {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8) !important;
   line-height: 1.2;
+  margin: 0;
 }
 
 .dropdown-arrow {
@@ -144,8 +146,7 @@
   .user-name {
     font-size: 0.8rem;
   }
-  
-  .user-role {
+    .user-dropdown .user-role {
     font-size: 0.7rem;
   }
 }

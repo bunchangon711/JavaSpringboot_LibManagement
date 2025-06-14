@@ -8,7 +8,6 @@ import Navbar from './components/layout/Navbar';
 import HomePage from './components/pages/HomePage';
 import BooksPage from './components/pages/BooksPage';
 import ProfilePage from './components/pages/ProfilePage';
-import UsersPage from './components/pages/UsersPage';
 import AdminDashboard from './components/pages/AdminDashboard';
 import './App.css';
 
@@ -42,11 +41,10 @@ function App() {
                 <Route path="/books" element={<BooksPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/my-borrowings" element={<MyBorrowings />} />
-              </Route>
-                {/* Protected routes with specific role requirements */}
+              </Route>              {/* Protected routes with specific role requirements */}
               <Route element={<ProtectedRoute requiredRoles={['ADMIN', 'LIBRARIAN']} />}>
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                <Route path="/users" element={<UsersPage />} />
+                {/* <Route path="/users" element={<UsersPage />} /> */}
                 <Route path="/all-borrowings" element={<AllBorrowings />} />
                 <Route path="/reports" element={<Reports />} />
               </Route>

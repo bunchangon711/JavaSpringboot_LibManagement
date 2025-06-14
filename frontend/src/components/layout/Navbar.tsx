@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import UserDropdown from '../common/UserDropdown';
 import './Navbar.css';
@@ -7,6 +7,7 @@ import './Navbar.css';
 const Navbar: React.FC = () => {
   const { currentUser, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleLogout = () => {
@@ -21,9 +22,13 @@ const Navbar: React.FC = () => {
       setSearchQuery('');
     }
   };
-
   if (!isAuthenticated) {
     return null; // Don't show navbar on login/register pages
+  }
+
+  // Hide navbar on admin dashboard
+  if (location.pathname === '/admin-dashboard') {
+    return null;
   }
   const isAdmin = currentUser?.role === 'ADMIN';
   const isLibrarian = currentUser?.role === 'LIBRARIAN';

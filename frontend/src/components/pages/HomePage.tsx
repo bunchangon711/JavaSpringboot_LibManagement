@@ -11,6 +11,15 @@ interface DashboardStats {
   overdueBooks: number;
 }
 
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  category: string;
+  availableCopies: number;
+  imageUrl?: string;
+}
+
 const HomePage: React.FC = () => {
   const { currentUser, loading: authLoading, isAuthenticated } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
@@ -18,9 +27,9 @@ const HomePage: React.FC = () => {
     availableBooks: 0,
     totalBorrowings: 0,
     overdueBooks: 0
-  });
-  const [loading, setLoading] = useState(true);
-  const [recentBooks, setRecentBooks] = useState<any[]>([]);
+  });  const [loading, setLoading] = useState(true);
+  const [recentBooks, setRecentBooks] = useState<Book[]>([]);
+  const [popularBooks, setPopularBooks] = useState<Book[]>([]);
   const isAdmin = currentUser?.role === 'ADMIN';
   const isLibrarian = currentUser?.role === 'LIBRARIAN';
   const canManage = isAdmin || isLibrarian;
@@ -54,10 +63,15 @@ const HomePage: React.FC = () => {
           totalBorrowings: 0,
           overdueBooks: 0
         });
-      }
-
-      // Get some recent books for display
+      }      // Get some recent books for display
       setRecentBooks(booksResponse.data.slice(0, 6));
+      
+      // Get popular books (for now, just books with high availability as a proxy)
+      const sortedBooks = [...booksResponse.data]
+        .filter(book => book.availableCopies > 0)
+        .sort((a, b) => b.availableCopies - a.availableCopies)
+        .slice(0, 3);
+      setPopularBooks(sortedBooks);
       
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -109,44 +123,66 @@ const HomePage: React.FC = () => {
             </div>
           </>
         )}
+      </div>      {/* Popular Books Banner */}
+      <div className="popular-books-banner">
+        <div className="banner-content">
+          <div className="banner-text">
+            <h2>📚 Popular Books This Month</h2>
+            <p>Discover the most borrowed books in our library</p>
+            <Link to="/books" className="banner-cta">
+              Browse All Books →
+            </Link>
+          </div>
+          <div className="banner-books">
+            {popularBooks.slice(0, 3).map((book) => (
+              <div key={book.id} className="banner-book">
+                <div className="book-cover">
+                  {book.imageUrl ? (
+                    <img 
+                      src={book.imageUrl} 
+                      alt={book.title}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.setAttribute('style', 'display: flex');
+                      }}
+                    />
+                  ) : null}
+                  <div className="book-placeholder" style={{display: book.imageUrl ? 'none' : 'flex'}}>
+                    📖
+                  </div>
+                </div>
+                <div className="book-info">
+                  <h4>{book.title}</h4>
+                  <p>{book.author}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="quick-actions">
-        <h2>Quick Actions</h2>
-        <div className="action-cards">
-          <Link to="/books" className="action-card">
-            <div className="action-icon">📖</div>
-            <div className="action-title">Browse Books</div>
-            <div className="action-description">Search and view available books</div>
+      {/* Navigation Cards */}
+      <div className="navigation-section">
+        <div className="nav-cards">
+          <Link to="/books" className="nav-card primary">
+            <div className="card-icon">📖</div>
+            <h3>Browse Books</h3>
+            <p>Search through our entire collection</p>
           </Link>
           
-          <Link to="/my-borrowings" className="action-card">
-            <div className="action-icon">📋</div>
-            <div className="action-title">My Borrowings</div>
-            <div className="action-description">View your borrowed books and due dates</div>
-          </Link>
-
-          <Link to="/profile" className="action-card">
-            <div className="action-icon">👤</div>
-            <div className="action-title">My Profile</div>
-            <div className="action-description">Update your profile information</div>
+          <Link to="/my-borrowings" className="nav-card secondary">
+            <div className="card-icon">�</div>
+            <h3>My Borrowings</h3>
+            <p>Track your borrowed books</p>
           </Link>
 
           {canManage && (
-            <>
-              <Link to="/users" className="action-card admin">
-                <div className="action-icon">👥</div>
-                <div className="action-title">Manage Users</div>
-                <div className="action-description">Add, edit, or remove users</div>
-              </Link>
-
-              <Link to="/reports" className="action-card admin">
-                <div className="action-icon">📊</div>
-                <div className="action-title">Reports</div>
-                <div className="action-description">View library statistics and reports</div>
-              </Link>
-            </>          )}
+            <Link to="/admin-dashboard" className="nav-card admin">
+              <div className="card-icon">⚙️</div>
+              <h3>Admin Dashboard</h3>
+              <p>Manage library operations</p>
+            </Link>
+          )}
         </div>
       </div>
 
