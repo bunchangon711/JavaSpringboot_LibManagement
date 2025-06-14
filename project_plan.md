@@ -102,3 +102,150 @@ This document outlines the implementation plan for a Digital Library Management 
 - RESTful API design
 - Security implementation
 - Software architecture principles
+
+
+
+Library Management System - Directory Structure
+library-management-system/
+├── README.md
+├── pom.xml
+├── .gitignore
+│
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── library/
+│   │   │           └── management/
+│   │   │               ├── LibraryManagementApplication.java
+│   │   │               │
+│   │   │               ├── config/
+│   │   │               │   ├── WebConfig.java
+│   │   │               │   └── DatabaseConfig.java
+│   │   │               │
+│   │   │               ├── controller/
+│   │   │               │   ├── BookController.java
+│   │   │               │   ├── UserController.java
+│   │   │               │   ├── BorrowingController.java
+│   │   │               │   └── WebController.java (for serving frontend)
+│   │   │               │
+│   │   │               ├── service/
+│   │   │               │   ├── BookService.java
+│   │   │               │   ├── UserService.java
+│   │   │               │   ├── BorrowingService.java
+│   │   │               │   └── FineService.java
+│   │   │               │
+│   │   │               ├── repository/
+│   │   │               │   ├── BookRepository.java
+│   │   │               │   ├── UserRepository.java
+│   │   │               │   ├── BorrowingRepository.java
+│   │   │               │   └── FineRepository.java
+│   │   │               │
+│   │   │               ├── model/
+│   │   │               │   ├── Book.java
+│   │   │               │   ├── User.java
+│   │   │               │   ├── Student.java
+│   │   │               │   ├── Librarian.java
+│   │   │               │   ├── Borrowing.java
+│   │   │               │   └── Fine.java
+│   │   │               │
+│   │   │               ├── dto/
+│   │   │               │   ├── BookDTO.java
+│   │   │               │   ├── UserDTO.java
+│   │   │               │   ├── BorrowingDTO.java
+│   │   │               │   └── LoginRequest.java
+│   │   │               │
+│   │   │               ├── exception/
+│   │   │               │   ├── BookNotFoundException.java
+│   │   │               │   ├── UserNotFoundException.java
+│   │   │               │   └── GlobalExceptionHandler.java
+│   │   │               │
+│   │   │               └── util/
+│   │   │                   ├── DateUtil.java
+│   │   │                   └── ValidationUtil.java
+│   │   │
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── application-dev.properties
+│   │       ├── data.sql (sample data)
+│   │       ├── schema.sql (if needed)
+│   │       │
+│   │       ├── static/
+│   │       │   ├── css/
+│   │       │   │   ├── style.css
+│   │       │   │   └── bootstrap.min.css
+│   │       │   │
+│   │       │   ├── js/
+│   │       │   │   ├── app.js
+│   │       │   │   ├── books.js
+│   │       │   │   ├── users.js
+│   │       │   │   ├── borrowings.js
+│   │       │   │   └── jquery.min.js
+│   │       │   │
+│   │       │   └── images/
+│   │       │       └── logo.png
+│   │       │
+│   │       └── templates/ (if using Thymeleaf)
+│   │           ├── index.html
+│   │           ├── books.html
+│   │           ├── users.html
+│   │           ├── borrowings.html
+│   │           └── login.html
+│   │
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── library/
+│                   └── management/
+│                       ├── LibraryManagementApplicationTests.java
+│                       ├── controller/
+│                       │   ├── BookControllerTest.java
+│                       │   └── UserControllerTest.java
+│                       ├── service/
+│                       │   ├── BookServiceTest.java
+│                       │   └── UserServiceTest.java
+│                       └── repository/
+│                           ├── BookRepositoryTest.java
+│                           └── UserRepositoryTest.java
+│
+├── frontend/ (Alternative: Separate React/Angular project)
+│   ├── package.json
+│   ├── public/
+│   │   ├── index.html
+│   │   └── favicon.ico
+│   └── src/
+│       ├── components/
+│       │   ├── BookList.js
+│       │   ├── UserManagement.js
+│       │   └── BorrowingHistory.js
+│       ├── services/
+│       │   └── api.js
+│       ├── App.js
+│       └── index.js
+│
+└── docs/
+    ├── API_Documentation.md
+    ├── Database_Schema.md
+    └── Setup_Instructions.md
+Key Points About This Structure:
+Backend (Spring Boot)
+
+Standard Maven structure with src/main/java and src/test/java
+Layered architecture: Controller → Service → Repository → Model
+DTOs for clean API responses (separates internal models from API contracts)
+Exception handling centralized in one place
+Configuration separated by environment
+
+Separate Frontend Project
+
+Create separate React/Vue/Angular project in frontend/ directory
+Communicates with backend via REST API
+More complex but more professional
+
+Why This Structure Works
+
+Separation of Concerns: Each package has a clear responsibility
+Scalable: Easy to add new features without restructuring
+Professional: Follows enterprise Java conventions
+Testable: Clear separation makes unit testing straightforward
+Maintainable: Easy to find and modify specific functionality
