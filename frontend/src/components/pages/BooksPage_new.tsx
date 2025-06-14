@@ -69,9 +69,10 @@ const BooksPage: React.FC = () => {
       setSearchType('title');
     }
   }, [searchParams]);
+
   useEffect(() => {
     fetchBooks();
-  }, [currentPage, pageSize, searchTerm, searchType]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, searchTerm, searchType]);
 
   const fetchBooks = async () => {
     try {

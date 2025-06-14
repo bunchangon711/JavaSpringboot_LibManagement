@@ -146,12 +146,11 @@ const HomePage: React.FC = () => {
                 <div className="action-title">Reports</div>
                 <div className="action-description">View library statistics and reports</div>
               </Link>
-            </>
-          )}
+            </>          )}
         </div>
       </div>
 
-      {/* Recent Books */}
+      {/* Recent Books Section */}
       <div className="recent-books">
         <h2>Recent Books in Library</h2>
         <div className="books-grid">

@@ -35,10 +35,12 @@ public class Book {
     private String publisher;
     
     private String category;
-    
-    @NotNull(message = "Total copies is required")
+      @NotNull(message = "Total copies is required")
     private Integer totalCopies;
     
     @NotNull(message = "Available copies is required")
     private Integer availableCopies;
+    
+    // Image URL for book cover (optional)
+    private String imageUrl;
 }
