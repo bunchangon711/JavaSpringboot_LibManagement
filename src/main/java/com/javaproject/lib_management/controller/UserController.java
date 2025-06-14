@@ -1,10 +1,10 @@
 package com.javaproject.lib_management.controller;
 
+import com.javaproject.lib_management.dto.UserUpdateDto;
 import com.javaproject.lib_management.model.User;
 import com.javaproject.lib_management.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +24,9 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    }    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+        return ResponseEntity.ok(userService.updateUser(id, userUpdateDto));
     }
 
     @DeleteMapping("/{id}")

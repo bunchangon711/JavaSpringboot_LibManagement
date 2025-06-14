@@ -1,5 +1,6 @@
 package com.javaproject.lib_management.service;
 
+import com.javaproject.lib_management.dto.UserUpdateDto;
 import com.javaproject.lib_management.model.User;
 import com.javaproject.lib_management.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
@@ -60,6 +61,28 @@ public class UserService {
         // Update password only if provided
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
+        
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUser(Long id, UserUpdateDto userUpdateDto) {
+        User user = getUserById(id);
+        
+        user.setName(userUpdateDto.getName());
+        
+        // Only update email if it's changed and not already in use
+        if (!user.getEmail().equals(userUpdateDto.getEmail())) {
+            if (userRepository.existsByEmail(userUpdateDto.getEmail())) {
+                throw new EntityExistsException("Email already in use");
+            }
+            user.setEmail(userUpdateDto.getEmail());
+        }
+        
+        // Update password only if provided
+        if (userUpdateDto.getPassword() != null && !userUpdateDto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userUpdateDto.getPassword()));
         }
         
         return userRepository.save(user);
