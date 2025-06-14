@@ -1,2 +1,25 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Mark generated/build files as linguist-generated to exclude from language stats
+target/ linguist-generated
+build/ linguist-generated
+frontend/build/ linguist-generated
+frontend/node_modules/ linguist-generated
+
+# Mark documentation files as documentation
+*.md linguist-documentation
+
+# Ensure Java files are properly detected
+*.java linguist-language=Java
+
+# Mark frontend files appropriately but with lower priority
+frontend/src/**/*.tsx linguist-language=TypeScript
+frontend/src/**/*.ts linguist-language=TypeScript
+frontend/src/**/*.js linguist-language=JavaScript
+frontend/src/**/*.css linguist-language=CSS
+
+# Mark Maven wrapper and config files as vendored
+mvnw linguist-vendored
+mvnw.cmd linguist-vendored
+frontend/package-lock.json linguist-generated
