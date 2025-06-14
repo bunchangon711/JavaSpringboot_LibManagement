@@ -1,14 +1,16 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { User, getCurrentUser, login as authLogin, logout as authLogout, register as authRegister } from '../../services/authService';
+import { setTokenExpirationHandler } from '../../services/api';
 
 // Define the shape of our context
 interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
   error: string | null;
-  login: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  handleTokenExpiration: () => void;
   isAuthenticated: boolean;
 }
 
@@ -20,6 +22,7 @@ export const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   register: async () => {},
   logout: () => {},
+  handleTokenExpiration: () => {},
   isAuthenticated: false,
 });
 
@@ -29,28 +32,39 @@ interface AuthProviderProps {
 }
 
 // Create a provider component
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // Handle token expiration
+  const handleTokenExpiration = useCallback(() => {
+    authLogout();
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+    setError('Session expired. Please log in again.');
+  }, []);
 
   // Check for existing user session on component mount
   useEffect(() => {
+    // Set up the token expiration handler
+    setTokenExpirationHandler(handleTokenExpiration);
+    
     const user = getCurrentUser();
-    if (user) {
+    const token = localStorage.getItem('token');
+    
+    if (user && token) {
+      // Trust the stored session initially, let API calls handle invalid tokens
       setCurrentUser(user);
       setIsAuthenticated(true);
     }
     setLoading(false);
-  }, []);
-
+  }, [handleTokenExpiration]);
   // Login function
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string) => {
     try {
       setLoading(true);
       setError(null);
-      const user = await authLogin(username, password);
+      const user = await authLogin(email, password);
       setCurrentUser(user);
       setIsAuthenticated(true);
     } catch (err: any) {
@@ -74,15 +88,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Logout function
+  };  // Logout function
   const logout = () => {
     authLogout();
     setCurrentUser(null);
     setIsAuthenticated(false);
   };
-
   // Value to be provided to consumers
   const value = {
     currentUser,
@@ -91,6 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     register,
     logout,
+    handleTokenExpiration,
     isAuthenticated,
   };
 

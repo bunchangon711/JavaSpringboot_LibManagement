@@ -7,14 +7,24 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRoles }) => {
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, currentUser, loading } = useAuth();
   const location = useLocation();
+
+  // Show loading while authentication is being checked
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   // Check if user is authenticated
   if (!isAuthenticated) {
     // Redirect to login page with return URL
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
+  
   // If specific roles are required, check if user has them
   if (requiredRoles && requiredRoles.length > 0) {
     const userRole = currentUser?.role || '';

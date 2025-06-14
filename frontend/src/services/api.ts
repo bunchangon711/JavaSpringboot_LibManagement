@@ -9,6 +9,13 @@ const API = axios.create({
   },
 });
 
+// Store reference to auth context handler (will be set by AuthContext)
+let tokenExpirationHandler: (() => void) | null = null;
+
+export const setTokenExpirationHandler = (handler: () => void) => {
+  tokenExpirationHandler = handler;
+};
+
 // Add a request interceptor to attach auth token to all requests
 API.interceptors.request.use(
   (config) => {
@@ -32,10 +39,17 @@ API.interceptors.response.use(
   (error) => {
     // Handle 401 Unauthorized errors (token expired)
     if (error.response && error.response.status === 401) {
-      // Clear local storage and redirect to login
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      // Use the token expiration handler if available, otherwise fallback to redirect
+      if (tokenExpirationHandler) {
+        tokenExpirationHandler();
+      } else {
+        // Fallback: clear storage and redirect to login
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+      }
     }
     return Promise.reject(error);
   }
