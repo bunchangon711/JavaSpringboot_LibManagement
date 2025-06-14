@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
   
@@ -16,15 +16,14 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Form validation
-    if (!username.trim() || !password.trim()) {
-      setFormError('Username and password are required');
+      // Form validation
+    if (!email.trim() || !password.trim()) {
+      setFormError('Email and password are required');
       return;
     }
     
     try {
-      await login(username, password);
+      await login(email, password);
       // Redirect to the page the user was trying to access
       navigate(from, { replace: true });
     } catch (err) {
@@ -44,14 +43,13 @@ const Login: React.FC = () => {
         </div>
       )}
       
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
+      <form onSubmit={handleSubmit}>        <div className="form-group">
+          <label htmlFor="email">Email</label>
           <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
           />
         </div>

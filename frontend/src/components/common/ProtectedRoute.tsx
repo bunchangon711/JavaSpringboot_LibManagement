@@ -15,11 +15,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRoles }) => {
     // Redirect to login page with return URL
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-
   // If specific roles are required, check if user has them
   if (requiredRoles && requiredRoles.length > 0) {
-    const userRoles = currentUser?.roles || [];
-    const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
+    const userRole = currentUser?.role || '';
+    const hasRequiredRole = requiredRoles.includes(userRole);
     
     if (!hasRequiredRole) {
       // User doesn't have the required role, redirect to unauthorized page

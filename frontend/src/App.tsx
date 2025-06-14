@@ -27,9 +27,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/books" element={<Books />} />
           </Route>
-          
-          {/* Protected routes with specific role requirements */}
-          <Route element={<ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_LIBRARIAN']} />}>
+            {/* Protected routes with specific role requirements */}
+          <Route element={<ProtectedRoute requiredRoles={['ADMIN', 'LIBRARIAN']} />}>
             <Route path="/users" element={<Users />} />
             <Route path="/borrowings" element={<Borrowings />} />
           </Route>

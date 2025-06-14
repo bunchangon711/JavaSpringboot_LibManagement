@@ -6,48 +6,35 @@ const API_URL = 'http://localhost:8080/api/auth/';
 // Define user type
 export interface User {
   id?: number;
-  username: string;
+  name: string;
   email?: string;
-  roles?: string[];
+  role?: string;
 }
 
 // Define authentication response
 export interface AuthResponse {
-  token: string;
-  type: string;
   id: number;
-  username: string;
+  name: string;
   email: string;
-  roles: string[];
+  role: string;
 }
 
 // Login function
-export const login = async (username: string, password: string): Promise<User> => {
+export const login = async (email: string, password: string): Promise<User> => {
   try {
-    const response = await axios.post<AuthResponse>(API_URL + 'signin', {
-      username,
+    // Using basic auth with the email and password
+    const response = await axios.post<User>(API_URL + 'login', {
+      email: email, // using email as the login identifier
       password,
     });
     
-    if (response.data.token) {
-      // Store user data in localStorage
-      localStorage.setItem('user', JSON.stringify({
-        id: response.data.id,
-        username: response.data.username,
-        email: response.data.email,
-        roles: response.data.roles,
-      }));
-      
-      // Store token separately
-      localStorage.setItem('token', response.data.token);
-    }
+    // Store user data in localStorage
+    localStorage.setItem('user', JSON.stringify(response.data));
+      // Create a basic auth token and store it
+    const token = btoa(`${email}:${password}`); // base64 encode
+    localStorage.setItem('token', token);
     
-    return {
-      id: response.data.id,
-      username: response.data.username,
-      email: response.data.email,
-      roles: response.data.roles,
-    };
+    return response.data;
   } catch (error) {
     console.error('Login error:', error);
     throw error;
@@ -57,8 +44,8 @@ export const login = async (username: string, password: string): Promise<User> =
 // Register function
 export const register = async (username: string, email: string, password: string): Promise<any> => {
   try {
-    return await axios.post(API_URL + 'signup', {
-      username,
+    return await axios.post(API_URL + 'register', {
+      name: username, // backend expects 'name' field instead of 'username'
       email,
       password,
     });
@@ -98,7 +85,7 @@ export const authHeader = (): Record<string, string> => {
   const token = getToken();
   
   if (token) {
-    return { Authorization: 'Bearer ' + token };
+    return { Authorization: 'Basic ' + token };
   } else {
     return {};
   }

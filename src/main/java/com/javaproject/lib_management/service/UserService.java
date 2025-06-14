@@ -72,4 +72,33 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+    
+    /**
+     * Authenticates a user with the provided email and password
+     * 
+     * @param email    The user's email
+     * @param password The user's raw password (not encrypted)
+     * @return The authenticated user
+     * @throws EntityNotFoundException if user with email is not found
+     * @throws IllegalArgumentException if password doesn't match
+     */
+    public User authenticateUser(String email, String password) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException("Invalid credentials"));
+            
+        // Check if password matches
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("Invalid credentials");
+        }
+        
+        // Don't return password in response
+        User userResponse = new User();
+        userResponse.setId(user.getId());
+        userResponse.setName(user.getName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setRole(user.getRole());
+        userResponse.setRegistrationDate(user.getRegistrationDate());
+        
+        return userResponse;
+    }
 }
