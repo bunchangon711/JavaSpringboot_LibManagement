@@ -43,4 +43,18 @@ public class Book {
     
     // Image URL for book cover (optional)
     private String imageUrl;
+    
+    // Library-specific fields
+    private String callNumber; // Library classification number (like Dewey Decimal)
+    
+    private String location; // Physical location in library (e.g., "Floor 2, Section A")
+    
+    private String description; // Book summary/description
+      private Boolean isReference = false; // Reference books cannot be checked out
+    
+    private Integer loanPeriodDays = 14; // Default checkout period
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BookType bookType = BookType.PHYSICAL; // Physical or Digital book
 }

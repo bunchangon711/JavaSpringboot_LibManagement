@@ -24,6 +24,7 @@ const ProfilePage: React.FC = () => {
     confirmPassword: ''
   });
   const [borrowings, setBorrowings] = useState<any[]>([]);
+  const [reservations, setReservations] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState('profile');
   const fetchProfile = useCallback(async () => {
     if (!currentUser?.id) return;
@@ -56,10 +57,22 @@ const ProfilePage: React.FC = () => {
     }
   }, [currentUser?.id]);
 
+  const fetchMyReservations = useCallback(async () => {
+    if (!currentUser?.id) return;
+    
+    try {
+      const response = await API.get(`/reservations/user/${currentUser.id}`);
+      setReservations(response.data);
+    } catch (error) {
+      console.error('Error fetching reservations:', error);
+    }
+  }, [currentUser?.id]);
+
   useEffect(() => {
     fetchProfile();
     fetchMyBorrowings();
-  }, [fetchProfile, fetchMyBorrowings]);
+    fetchMyReservations();
+  }, [fetchProfile, fetchMyBorrowings, fetchMyReservations]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +119,33 @@ const ProfilePage: React.FC = () => {
       alert(errorMessage);
     }
   };
+
+  const handleRenewBook = async (borrowingId: number) => {
+    if (!currentUser?.id) return;
+    
+    try {
+      await API.put(`/borrowings/${borrowingId}/renew/user/${currentUser.id}`);
+      fetchMyBorrowings(); // Refresh borrowings
+      alert('Book renewed successfully! New due date has been set.');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to renew book';
+      alert(errorMessage);
+    }
+  };
+
+  const handleCancelReservation = async (reservationId: number) => {
+    if (!currentUser?.id) return;
+    
+    try {
+      await API.delete(`/reservations/${reservationId}/user/${currentUser.id}`);
+      fetchMyReservations(); // Refresh reservations
+      alert('Reservation cancelled successfully!');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to cancel reservation';
+      alert(errorMessage);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
   };
@@ -138,6 +178,12 @@ const ProfilePage: React.FC = () => {
             onClick={() => setActiveTab('borrowings')}
           >
             My Borrowings
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'reservations' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reservations')}
+          >
+            My Reservations
           </button>
         </div>
       </div>
@@ -285,6 +331,53 @@ const ProfilePage: React.FC = () => {
                         className="btn btn-primary btn-sm"
                       >
                         Return Book
+                      </button>
+                      <button 
+                        onClick={() => handleRenewBook(borrowing.id)}
+                        className="btn btn-secondary btn-sm"
+                      >
+                        Renew Book
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'reservations' && (
+        <div className="reservations-content">
+          <h3>My Book Reservations</h3>
+          
+          {reservations.length === 0 ? (
+            <div className="no-reservations">
+              <p>You have no active reservations.</p>
+            </div>
+          ) : (
+            <div className="reservations-list">
+              {reservations.map((reservation) => (
+                <div key={reservation.id} className="reservation-card">                  <div className="reservation-details">
+                    <h4>{reservation.book.title}</h4>
+                    <p><strong>Author:</strong> {reservation.book.author}</p>
+                    <p><strong>Reserved On:</strong> {formatDate(reservation.reservationDate)}</p>
+                    <p><strong>Status:</strong> <span className={`status ${reservation.status.toLowerCase()}`}>{reservation.status}</span></p>
+                    {reservation.queuePosition && (
+                      <p><strong>Queue Position:</strong> #{reservation.queuePosition}</p>
+                    )}
+                    {reservation.expiryDate && (
+                      <p><strong>Valid Until:</strong> {formatDate(reservation.expiryDate)}</p>
+                    )}
+                  </div>
+                  
+                  {reservation.isActive && (
+                    <div className="reservation-actions">
+                      <button 
+                        onClick={() => handleCancelReservation(reservation.id)}
+                        className="btn btn-danger btn-sm"
+                      >
+                        Cancel Reservation
                       </button>
                     </div>
                   )}

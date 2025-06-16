@@ -54,8 +54,24 @@ public class BorrowingController {
     }
 
     @GetMapping("/{id}/fine")
-    public ResponseEntity<Map<String, Double>> calculateFine(@PathVariable Long id) {
+    public ResponseEntity<Double> calculateFine(@PathVariable Long id) {
         double fine = borrowingService.calculateFine(id);
-        return ResponseEntity.ok(Map.of("fine", fine));
+        return ResponseEntity.ok(fine);
+    }
+    
+    @PutMapping("/{id}/renew/user/{userId}")
+    public ResponseEntity<Borrowing> renewBorrowing(
+            @PathVariable Long id, 
+            @PathVariable Long userId) {
+        Borrowing renewedBorrowing = borrowingService.renewBorrowing(id, userId);
+        return ResponseEntity.ok(renewedBorrowing);
+    }
+    
+    @GetMapping("/{id}/can-renew/user/{userId}")
+    public ResponseEntity<Boolean> canRenewBorrowing(
+            @PathVariable Long id, 
+            @PathVariable Long userId) {
+        boolean canRenew = borrowingService.canRenewBorrowing(id, userId);
+        return ResponseEntity.ok(canRenew);
     }
 }

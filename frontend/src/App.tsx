@@ -8,11 +8,11 @@ import Navbar from './components/layout/Navbar';
 import HomePage from './components/pages/HomePage';
 import BooksPage from './components/pages/BooksPage';
 import ProfilePage from './components/pages/ProfilePage';
+import SubscriptionPage from './components/pages/SubscriptionPage';
 import AdminDashboard from './components/pages/AdminDashboard';
 import './App.css';
 
 // Placeholder components for remaining routes
-const MyBorrowings = () => <div>My Borrowings Page - Coming Soon</div>;
 const AllBorrowings = () => <div>All Borrowings Management - Coming Soon</div>;
 const Reports = () => <div>Reports Page - Coming Soon</div>;
 const Unauthorized = () => (
@@ -34,14 +34,13 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
-              
-              {/* Protected routes - require authentication */}
+                {/* Protected routes - require authentication */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/books" element={<BooksPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/my-borrowings" element={<MyBorrowings />} />
-              </Route>              {/* Protected routes with specific role requirements */}
+                <Route path="/my-subscription" element={<SubscriptionPage />} />
+              </Route>{/* Protected routes with specific role requirements */}
               <Route element={<ProtectedRoute requiredRoles={['ADMIN', 'LIBRARIAN']} />}>
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 {/* <Route path="/users" element={<UsersPage />} /> */}

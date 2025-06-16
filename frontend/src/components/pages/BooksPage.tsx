@@ -17,6 +17,12 @@ interface Book {
   totalCopies: number;
   availableCopies: number;
   imageUrl?: string;
+  callNumber?: string;
+  location?: string;
+  description?: string;
+  isReference?: boolean;
+  loanPeriodDays?: number;
+  bookType?: string;
 }
 
 interface PagedResponse<T> {
@@ -43,9 +49,7 @@ const BooksPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(12);
   const [totalElements, setTotalElements] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  
-  const [formData, setFormData] = useState({
+  const [totalPages, setTotalPages] = useState(0);    const [formData, setFormData] = useState({
     title: '',
     author: '',
     isbn: '',
@@ -54,7 +58,13 @@ const BooksPage: React.FC = () => {
     category: '',
     totalCopies: 1,
     availableCopies: 1,
-    imageUrl: ''
+    imageUrl: '',
+    callNumber: '',
+    location: '',
+    description: '',
+    isReference: false,
+    loanPeriodDays: 14,
+    bookType: 'PHYSICAL'
   });
 
   const isAdmin = currentUser?.role === 'ADMIN';
@@ -139,7 +149,6 @@ const BooksPage: React.FC = () => {
       setUploading(false);
     }
   };
-
   const handleBorrowBook = async (bookId: number) => {
     if (!currentUser?.id) return;
 
@@ -150,10 +159,47 @@ const BooksPage: React.FC = () => {
       });
       
       fetchBooks(); // Refresh to update available copies
-      alert('Book borrowed successfully!');
+      alert('Book checked out successfully! Please return it by the due date.');
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to borrow book';
+      const errorMessage = error.response?.data?.message || 'Failed to check out book';
       alert(errorMessage);
+    }
+  };
+  const handleReserveBook = async (bookId: number) => {
+    if (!currentUser?.id) return;
+    
+    try {
+      await API.post('/reservations', {
+        userId: currentUser.id,
+        bookId: bookId
+      });
+      
+      fetchBooks(); // Refresh to update status
+      alert('Reservation placed successfully! You will be notified when the book becomes available.');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to place reservation';
+      alert(errorMessage);
+    }
+  };
+  const handleViewDetails = (bookId: number) => {    const book = books.find(b => b.id === bookId);
+    if (book) {
+      const details = `
+Title: ${book.title}
+Author: ${book.author}
+ISBN: ${book.isbn}
+Publisher: ${book.publisher}
+Category: ${book.category}
+Publication Date: ${book.publicationDate}
+${book.callNumber ? `Call Number: ${book.callNumber}` : ''}
+${book.location ? `Location: ${book.location}` : ''}
+${book.description ? `Description: ${book.description}` : ''}
+Book Type: ${book.bookType === 'DIGITAL' ? 'Digital' : 'Physical'}
+Type: ${book.isReference ? 'Reference Only' : 'Circulating'}
+Loan Period: ${book.loanPeriodDays || 14} days
+Total Copies: ${book.totalCopies}
+Available Copies: ${book.availableCopies}
+      `;
+      alert(details);
     }
   };
 
@@ -198,9 +244,7 @@ const BooksPage: React.FC = () => {
       const errorMessage = error.response?.data?.message || 'Failed to delete book';
       alert(errorMessage);
     }
-  };
-
-  const resetForm = () => {
+  };  const resetForm = () => {
     setFormData({
       title: '',
       author: '',
@@ -210,12 +254,16 @@ const BooksPage: React.FC = () => {
       category: '',
       totalCopies: 1,
       availableCopies: 1,
-      imageUrl: ''
+      imageUrl: '',
+      callNumber: '',
+      location: '',
+      description: '',
+      isReference: false,
+      loanPeriodDays: 14,
+      bookType: 'PHYSICAL'
     });
   };
-
-  const startEdit = (book: Book) => {
-    setEditingBook(book);
+  const startEdit = (book: Book) => {    setEditingBook(book);
     setFormData({
       title: book.title,
       author: book.author,
@@ -225,7 +273,13 @@ const BooksPage: React.FC = () => {
       category: book.category,
       totalCopies: book.totalCopies,
       availableCopies: book.availableCopies,
-      imageUrl: book.imageUrl || ''
+      imageUrl: book.imageUrl || '',
+      callNumber: book.callNumber || '',
+      location: book.location || '',
+      description: book.description || '',
+      isReference: book.isReference || false,
+      loanPeriodDays: book.loanPeriodDays || 14,
+      bookType: book.bookType || 'PHYSICAL'
     });
   };
 
@@ -241,11 +295,10 @@ const BooksPage: React.FC = () => {
 
   return (
     <div className="books-page">
-      <div className="page-header">
-        <div className="header-content">
-          <h1>📚 Book Inventory</h1>
+      <div className="page-header">        <div className="header-content">
+          <h1>📚 Library Collection</h1>
           <div className="header-stats">
-            <span className="stat-item">Total: {totalElements} books</span>
+            <span className="stat-item">Collection: {totalElements} titles</span>
           </div>
         </div>
         {canManage && (
@@ -364,6 +417,62 @@ const BooksPage: React.FC = () => {
                 required
               />
             </div>
+            
+            {/* Library-specific fields */}
+            <div className="form-row">
+              <input
+                type="text"
+                placeholder="Call Number (e.g., 813.54 SMI)"
+                value={formData.callNumber}
+                onChange={(e) => setFormData({...formData, callNumber: e.target.value})}
+              />
+              <input
+                type="text"
+                placeholder="Location (e.g., Floor 2, Section A)"
+                value={formData.location}
+                onChange={(e) => setFormData({...formData, location: e.target.value})}
+              />
+            </div>
+            
+            <div className="form-row">
+              <textarea
+                placeholder="Book Description/Summary"
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                rows={3}
+                className="description-textarea"
+              />
+            </div>
+            
+            <div className="form-row">
+              <div className="checkbox-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={formData.isReference}
+                    onChange={(e) => setFormData({...formData, isReference: e.target.checked})}
+                  />
+                  <span className="checkmark"></span>
+                  Reference Book (Cannot be checked out)
+                </label>
+              </div>
+                <input
+                type="number"
+                placeholder="Loan Period (days)"
+                value={formData.loanPeriodDays}
+                onChange={(e) => setFormData({...formData, loanPeriodDays: parseInt(e.target.value)})}
+                min="1"
+                max="90"
+              />
+              
+              <select
+                value={formData.bookType}
+                onChange={(e) => setFormData({...formData, bookType: e.target.value})}
+              >
+                <option value="PHYSICAL">Physical Book</option>
+                <option value="DIGITAL">Digital Book</option>
+              </select>
+            </div>
 
             {/* Image Upload Section */}
             <div className="image-upload-section">
@@ -439,36 +548,59 @@ const BooksPage: React.FC = () => {
                   </div>
                 )}
               </div>
-              
-              <div className="book-content">
+                <div className="book-content">
                 <div className="book-header">
-                  <h3 className="book-title">{book.title}</h3>
-                  <div className="book-availability">
+                  <h3 className="book-title">
+                    {book.title}
+                    {book.bookType === 'DIGITAL' && <span className="digital-badge">💻 Digital</span>}
+                  </h3>                  <div className="book-availability">
                     {book.availableCopies > 0 ? (
-                      <span className="available">Available ({book.availableCopies})</span>
+                      <span className="available">📚 {book.availableCopies} of {book.totalCopies} on shelf</span>
                     ) : (
-                      <span className="unavailable">Not Available</span>
+                      <span className="unavailable">📋 All copies checked out</span>
                     )}
                   </div>
                 </div>
-                
-                <div className="book-details">
+                  <div className="book-details">
                   <p><strong>Author:</strong> {book.author}</p>
                   <p><strong>ISBN:</strong> {book.isbn}</p>
                   <p><strong>Publisher:</strong> {book.publisher}</p>
                   <p><strong>Category:</strong> {book.category}</p>
+                  {book.callNumber && <p><strong>Call Number:</strong> {book.callNumber}</p>}
+                  {book.location && <p><strong>Location:</strong> {book.location}</p>}
                   <p><strong>Total Copies:</strong> {book.totalCopies}</p>
-                </div>
-                
-                <div className="book-actions">
-                  {book.availableCopies > 0 && (
+                  {book.isReference && <p><strong>Type:</strong> <span className="reference-badge">Reference Only</span></p>}
+                  <p><strong>Loan Period:</strong> {book.loanPeriodDays || 14} days</p>
+                </div>                  <div className="book-actions">
+                  {book.isReference ? (
+                    <button 
+                      className="btn btn-info btn-sm reference-btn"
+                      disabled
+                    >
+                      📚 Reference Only
+                    </button>
+                  ) : book.availableCopies > 0 ? (
                     <button 
                       onClick={() => handleBorrowBook(book.id)}
-                      className="btn btn-primary btn-sm"
+                      className="btn btn-primary btn-sm checkout-btn"
                     >
-                      Borrow Book
+                      📖 Check Out
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => handleReserveBook(book.id)}
+                      className="btn btn-warning btn-sm reserve-btn"
+                    >
+                      📋 Place Hold
                     </button>
                   )}
+                  
+                  <button 
+                    onClick={() => handleViewDetails(book.id)}
+                    className="btn btn-outline btn-sm"
+                  >
+                    📄 Details
+                  </button>
                   
                   {canManage && (
                     <>

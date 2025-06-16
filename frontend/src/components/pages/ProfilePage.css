@@ -58,8 +58,8 @@
 }
 
 .user-avatar {
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -266,6 +266,9 @@
 .borrowing-actions {
   margin-top: 1rem;
   text-align: right;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 /* Button Styles */
@@ -319,6 +322,146 @@
   padding: 4rem;
   font-size: 1.2rem;
   color: #e74c3c;
+}
+
+/* Subscription-specific styles */
+.subscription-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+  display: inline-block;
+}
+
+.subscription-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.subscription-icon {
+  font-size: 1.2rem;
+}
+
+.membership-type {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.85rem;
+}
+
+/* Book action buttons */
+.checkout-btn {
+  background-color: #27ae60 !important;
+}
+
+.checkout-btn:hover {
+  background-color: #219a52 !important;
+}
+
+.reserve-btn {
+  background-color: #f39c12 !important;
+  color: white !important;
+}
+
+.reserve-btn:hover {
+  background-color: #e67e22 !important;
+}
+
+/* Library availability indicators */
+.book-availability .available {
+  background: #d4edda;
+  color: #155724;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.book-availability .unavailable {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.next-available {
+  display: block;
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+/* Reservations content */
+.reservations-content {
+  margin-top: 2rem;
+}
+
+.reservations-content h3 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.no-reservations {
+  text-align: center;
+  padding: 3rem;
+  color: #7f8c8d;
+  font-style: italic;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.reservations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reservation-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-left: 4px solid #f39c12;
+}
+
+.reservation-card .status.waiting {
+  background: #fff3cd;
+  color: #856404;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.reservation-card .status.available {
+  background: #d4edda;
+  color: #155724;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.reservation-card .status.expired {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.reservation-actions {
+  margin-top: 1rem;
+  text-align: right;
 }
 
 @media (max-width: 768px) {

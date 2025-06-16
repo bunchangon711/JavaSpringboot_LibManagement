@@ -1,0 +1,428 @@
+.subscription-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.page-header h1 {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  background: #3498db;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  color: #3498db;
+  background: #f8f9fa;
+}
+
+.tab.active {
+  color: #3498db;
+  border-bottom-color: #3498db;
+  background: #f8f9fa;
+}
+
+/* Overview Tab */
+.overview-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.current-plan {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.plan-header {
+  background: #3498db;
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.plan-status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.plan-status.active {
+  background: #27ae60;
+}
+
+.plan-status.inactive {
+  background: #e74c3c;
+}
+
+.plan-details {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.plan-info h3,
+.usage-stats h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 0.5rem;
+}
+
+.plan-info p {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+.expiry-warning.urgent {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.usage-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.usage-item span:first-child {
+  min-width: 120px;
+  font-weight: 500;
+}
+
+.usage-bar {
+  flex: 1;
+  height: 10px;
+  background: #ecf0f1;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.usage-fill {
+  height: 100%;
+  background: #3498db;
+  transition: width 0.3s ease;
+}
+
+.usage-item span:last-child {
+  min-width: 80px;
+  text-align: right;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Borrowings Tab */
+.borrowings-tab h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.no-borrowings {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.no-borrowings p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.borrowings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.borrowing-section h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.borrowings-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.borrowing-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  gap: 1rem;
+  align-items: start;
+  border-left: 4px solid #3498db;
+}
+
+.borrowing-card.digital {
+  border-left-color: #9b59b6;
+}
+
+.book-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+}
+
+.book-info p {
+  margin: 0;
+  color: #666;
+  font-style: italic;
+}
+
+.borrowing-details p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.borrowing-details .fine {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.borrowing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Upgrade Tab */
+.upgrade-tab h2 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.tier-comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.tier-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tier-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.tier-card.current {
+  border: 3px solid #27ae60;
+}
+
+.tier-header {
+  background: #3498db;
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.tier-card.current .tier-header {
+  background: #27ae60;
+}
+
+.tier-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.tier-price {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.tier-price span {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.tier-features {
+  padding: 1.5rem;
+}
+
+.tier-features p {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.tier-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.tier-features li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ecf0f1;
+  color: #666;
+}
+
+.tier-features li:before {
+  content: "✓ ";
+  color: #27ae60;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.tier-benefits {
+  font-style: italic;
+  color: #666;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-top: 1rem;
+}
+
+.tier-action {
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid #ecf0f1;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: #3498db;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: #95a5a6;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #7f8c8d;
+}
+
+.btn-current {
+  background: #27ae60;
+  color: white;
+  cursor: not-allowed;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .subscription-page {
+    padding: 1rem;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .plan-details {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .borrowing-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .tier-comparison {
+    grid-template-columns: 1fr;
+  }
+  
+  .usage-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .usage-item span:first-child,
+  .usage-item span:last-child {
+    min-width: auto;
+  }
+}

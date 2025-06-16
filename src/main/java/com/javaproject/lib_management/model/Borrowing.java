@@ -38,6 +38,13 @@ public class Borrowing {
     
     private Boolean isReturned = false;
     
+    // Renewal tracking
+    private Integer renewalCount = 0;
+    
+    private Integer maxRenewals = 2; // Maximum number of renewals allowed
+    
+    private LocalDate lastRenewalDate;
+    
     // Method to calculate fine
     @Transient
     public double calculateFine() {
@@ -46,5 +53,25 @@ public class Borrowing {
             return daysLate * 0.5; // $0.50 per day
         }
         return 0.0;
+    }
+    
+    // Method to check if renewal is allowed
+    @Transient
+    public boolean canRenew() {
+        return !isReturned && 
+               renewalCount < maxRenewals && 
+               LocalDate.now().isBefore(dueDate.plusDays(1)); // Can renew until 1 day after due date
+    }
+    
+    // Method to renew the borrowing
+    @Transient
+    public void renew(int renewalPeriodDays) {
+        if (!canRenew()) {
+            throw new IllegalStateException("This borrowing cannot be renewed");
+        }
+        
+        this.dueDate = this.dueDate.plusDays(renewalPeriodDays);
+        this.renewalCount++;
+        this.lastRenewalDate = LocalDate.now();
     }
 }

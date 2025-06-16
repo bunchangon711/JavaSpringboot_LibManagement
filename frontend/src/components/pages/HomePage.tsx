@@ -95,27 +95,30 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <div className="homepage">
-      <div className="hero-section">
-        <h1>Welcome to the Library Management System</h1>
-        <p>Hello, <strong>{currentUser?.name}</strong>! Manage your library resources efficiently.</p>
-      </div>
-
-      {/* Stats Section */}
+    <div className="homepage">      <div className="hero-section">
+        <h1>Welcome to the City Digital Library</h1>
+        <p>Hello, <strong>{currentUser?.name}</strong>! Your library subscription is active and ready to use.</p>        <div className="subscription-info">
+          <div className="subscription-status">
+            <span className="subscription-icon">💳</span>
+            <span>Subscription: Active</span>
+            <span className="membership-type">Digital Member</span>
+          </div>
+        </div>
+      </div>      {/* Stats Section */}
       <div className="stats-section">
         <div className="stat-card">
           <div className="stat-number">{stats.totalBooks}</div>
-          <div className="stat-label">Total Books</div>
+          <div className="stat-label">Collection Size</div>
         </div>
         <div className="stat-card">
           <div className="stat-number">{stats.availableBooks}</div>
-          <div className="stat-label">Available Books</div>
+          <div className="stat-label">Available Titles</div>
         </div>
         {canManage && (
           <>
             <div className="stat-card">
               <div className="stat-number">{stats.totalBorrowings}</div>
-              <div className="stat-label">Active Borrowings</div>
+              <div className="stat-label">Items Checked Out</div>
             </div>
             <div className="stat-card warning">
               <div className="stat-number">{stats.overdueBooks}</div>
@@ -127,10 +130,10 @@ const HomePage: React.FC = () => {
       <div className="popular-books-banner">
         <div className="banner-content">
           <div className="banner-text">
-            <h2>📚 Popular Books This Month</h2>
-            <p>Discover the most borrowed books in our library</p>
+            <h2>📚 Featured This Month</h2>
+            <p>Discover popular titles in our collection</p>
             <Link to="/books" className="banner-cta">
-              Browse All Books →
+              Browse Full Catalog →
             </Link>
           </div>
           <div className="banner-books">
@@ -163,24 +166,22 @@ const HomePage: React.FC = () => {
 
       {/* Navigation Cards */}
       <div className="navigation-section">
-        <div className="nav-cards">
-          <Link to="/books" className="nav-card primary">
-            <div className="card-icon">📖</div>
-            <h3>Browse Books</h3>
-            <p>Search through our entire collection</p>
-          </Link>
-          
-          <Link to="/my-borrowings" className="nav-card secondary">
+        <div className="nav-cards">          <Link to="/books" className="nav-card primary">
             <div className="card-icon">�</div>
-            <h3>My Borrowings</h3>
-            <p>Track your borrowed books</p>
+            <h3>Catalog Search</h3>
+            <p>Browse our digital collection</p>
+          </Link>
+            <Link to="/my-subscription" className="nav-card secondary">
+            <div className="card-icon">�</div>
+            <h3>My Subscription</h3>
+            <p>Plan, borrowings & renewals</p>
           </Link>
 
           {canManage && (
             <Link to="/admin-dashboard" className="nav-card admin">
               <div className="card-icon">⚙️</div>
-              <h3>Admin Dashboard</h3>
-              <p>Manage library operations</p>
+              <h3>Staff Portal</h3>
+              <p>Circulation & administration</p>
             </Link>
           )}
         </div>

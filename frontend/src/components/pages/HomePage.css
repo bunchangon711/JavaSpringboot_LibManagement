@@ -49,6 +49,36 @@
   z-index: 1;
 }
 
+/* Subscription Info Styles */
+.subscription-info {
+  margin-top: 2rem;
+  display: inline-block;
+}
+
+.subscription-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.subscription-icon {
+  font-size: 1.2rem;
+}
+
+.membership-type {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+}
+
 .stats-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

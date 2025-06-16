@@ -34,20 +34,19 @@ const Navbar: React.FC = () => {
   const isLibrarian = currentUser?.role === 'LIBRARIAN';
 
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/">📚 Library Management</Link>
+    <nav className="navbar">      <div className="navbar-brand">
+        <Link to="/">📚 City Digital Library</Link>
       </div>        <div className="navbar-menu">
         <Link to="/" className="navbar-item">Home</Link>
-        <Link to="/books" className="navbar-item">Books</Link>
-        <Link to="/my-borrowings" className="navbar-item">My Borrowings</Link>
+        <Link to="/books" className="navbar-item">Catalog</Link>
+        <Link to="/my-subscription" className="navbar-item">My Subscription</Link>
       </div>
 
       <div className="navbar-search">
         <form onSubmit={handleSearch} className="search-form">
           <input
             type="text"
-            placeholder="Search books..."
+            placeholder="Search catalog..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"

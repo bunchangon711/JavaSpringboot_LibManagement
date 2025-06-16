@@ -37,6 +37,21 @@ This document outlines the implementation plan for a Digital Library Management 
    - Overdue books
    - User activity
 
+5. **Reservation System**
+   - Place holds on books
+   - Manage reservations
+   - Notify users when books are available
+
+6. **Renewal System**
+   - Renew borrowed books
+   - Limit renewals to prevent abuse
+   - Update due dates accordingly
+
+7. **Library Card Subscription System**
+   - Manage library card subscriptions
+   - Different tiers with varying benefits
+   - Integration with the borrowing system
+
 ## Implementation Steps
 
 ### Step 1: Project Setup
@@ -49,6 +64,8 @@ This document outlines the implementation plan for a Digital Library Management 
   - Book
   - User
   - Borrowing
+  - Reservation
+  - Subscription
 - Create repositories for database operations
 
 ### Step 3: Business Logic Implementation
@@ -57,6 +74,9 @@ This document outlines the implementation plan for a Digital Library Management 
   - User management
   - Borrowing operations
   - Fine calculation
+  - Reservation handling
+  - Renewal processing
+  - Subscription management
 
 ### Step 4: API Development
 - Create RESTful controllers:
@@ -65,6 +85,8 @@ This document outlines the implementation plan for a Digital Library Management 
   - AuthController
   - BorrowingController
   - ReportController
+  - ReservationController
+  - SubscriptionController
 
 ### Step 5: Security Implementation
 - Configure Spring Security
@@ -266,6 +288,131 @@ This document outlines the implementation plan for a Digital Library Management 
 - ✅ Environment-specific configuration capability
 - ✅ Security configuration for development
 
+### 7. Book Reservation System (COMPLETED)
+**Status: Fully Implemented**
+
+**Data Model:**
+- ✅ `Reservation` entity with queue management
+- ✅ Queue position tracking and automatic updates
+- ✅ Reservation status management (WAITING, AVAILABLE, FULFILLED, EXPIRED, CANCELLED)
+- ✅ Expiry date handling for reservation validity
+
+**Repository Layer:**
+- ✅ `ReservationRepository` with comprehensive query methods
+- ✅ Queue position management and automatic updates
+- ✅ Expired reservation detection and cleanup
+
+**Service Layer:**
+- ✅ `ReservationService` with complete business logic:
+  - Reservation creation with availability checks
+  - Maximum reservation limit enforcement (5 reservations)
+  - Queue position management
+  - Automatic queue updates on cancellations
+  - Expired reservation processing
+
+**REST API Controllers:**
+- ✅ `ReservationController` with reservation endpoints:
+  - POST /api/reservations (create reservation)
+  - GET /api/reservations/user/{userId} (user's reservations)
+  - DELETE /api/reservations/{id}/user/{userId} (cancel reservation)
+  - PUT /api/reservations/{id}/fulfill (fulfill reservation)
+  - GET /api/reservations/expired (get expired reservations)
+
+### 8. Book Renewal System (COMPLETED)
+**Status: Fully Implemented**
+
+**Enhanced Borrowing Model:**
+- ✅ Renewal count tracking
+- ✅ Maximum renewals limit (default: 2 renewals)
+- ✅ Last renewal date tracking
+- ✅ Renewal eligibility validation
+
+**Service Layer Enhancements:**
+- ✅ `BorrowingService` enhanced with renewal functionality:
+  - Renewal eligibility checking
+  - Renewal limit enforcement
+  - Due date extension (14 days per renewal)
+  - Integration with reservation system
+
+**REST API Enhancements:**
+- ✅ `BorrowingController` with renewal endpoints:
+  - PUT /api/borrowings/{id}/renew/user/{userId} (renew borrowing)
+  - GET /api/borrowings/{id}/can-renew/user/{userId} (check renewal eligibility)
+
+### 9. Frontend Integration (COMPLETED)
+**Status: Fully Implemented**
+
+**User Interface Updates:**
+- ✅ "Place Hold" button for unavailable books
+- ✅ "Check Out" terminology instead of "Borrow Book"
+- ✅ Renewal buttons in user borrowing history
+- ✅ Reservation management in user profile
+- ✅ Queue position display for active reservations
+
+**Profile Page Enhancements:**
+- ✅ Three-tab interface: Profile, Borrowings, Reservations
+- ✅ Renewal functionality with proper error handling
+- ✅ Reservation cancellation capability
+- ✅ Status indicators for borrowings and reservations
+
+**Library-Specific UI:**
+- ✅ Updated terminology throughout the interface
+- ✅ Library card status display
+- ✅ Collection size vs inventory language
+- ✅ Catalog vs books terminology
+
+### 10. Library Card Subscription System (COMPLETED)
+**Status: Fully Implemented**
+
+**Data Model:**
+- ✅ `Subscription` entity with subscription tier management
+- ✅ `SubscriptionTier` enum (FREE, MONTHLY, ANNUAL) with pricing and limits
+- ✅ `BookType` enum (PHYSICAL, DIGITAL) for book classification
+- ✅ Track usage counts for physical and digital books
+- ✅ Automatic expiry and renewal handling
+
+**Repository Layer:**
+- ✅ `SubscriptionRepository` with comprehensive query methods
+- ✅ Find subscriptions by user, tier, active status
+- ✅ Expired subscription detection and auto-renewal queries
+
+**Service Layer:**
+- ✅ `SubscriptionService` with complete business logic:
+  - Subscription creation and management
+  - Tier upgrade/downgrade functionality
+  - Usage limit enforcement (physical vs digital books)
+  - Automatic expired subscription processing
+  - Borrow count tracking and validation
+
+**REST API Controllers:**
+- ✅ `SubscriptionController` with subscription endpoints:
+  - GET /api/subscriptions/user/{userId} (get user subscription)
+  - POST /api/subscriptions/create (create subscription)
+  - PUT /api/subscriptions/upgrade (upgrade subscription tier)
+  - PUT /api/subscriptions/renew/{userId} (renew subscription)
+  - GET /api/subscriptions/tiers (get available tiers)
+  - GET /api/subscriptions/tier-info/{tier} (get tier details)
+
+**Integration with Borrowing System:**
+- ✅ Updated `BorrowingService` to check subscription eligibility
+- ✅ Physical vs digital book borrowing limits enforced
+- ✅ Automatic usage count updates on borrow/return
+- ✅ Enhanced `Book` entity with bookType field
+
+**Subscription Tiers:**
+- ✅ **FREE**: 0 physical books, 10 digital books, $0/month
+- ✅ **MONTHLY**: 10 physical books, unlimited digital, $9.99/month
+- ✅ **ANNUAL**: 20 physical books, unlimited digital, $99.99/year
+
+**Frontend Integration:**
+- ✅ New subscription management page (/my-subscription)
+- ✅ Three-tab interface: Overview, Borrowings, Upgrade Plan
+- ✅ Visual subscription status and usage tracking
+- ✅ Tier comparison and upgrade functionality
+- ✅ Updated navbar to replace "My Account" with "My Subscription"
+- ✅ Enhanced book display with digital/physical indicators
+- ✅ Updated book form to include book type selection
+
 ## 🔧 TECHNICAL IMPLEMENTATION HIGHLIGHTS
 
 ### Backend Architecture Achievements:
@@ -277,6 +424,8 @@ This document outlines the implementation plan for a Digital Library Management 
 - ✅ **Database Design**: Normalized schema with proper relationships
 - ✅ **Transaction Management**: @Transactional annotations for data consistency
 - ✅ **Business Logic**: Complex borrowing rules and fine calculations implemented
+- ✅ **Reservation and Renewal**: Complete reservation and renewal functionality
+- ✅ **Subscription System**: Fully functional library card subscription system
 
 ### OOP Principles Demonstrated:
 - ✅ **Encapsulation**: Private fields with public getters/setters, service layer abstraction
@@ -319,6 +468,23 @@ o	Add new users with role assignment
 o	Edit existing users
 o	Delete users (except self)
 o	Role-based permissions (only admins can assign admin roles)
+6.	Reservation Management (ReservationsPage.tsx)
+o	View and manage book reservations
+o	Place new reservations
+o	Cancel existing reservations
+o	Role-based access (admins/librarians manage all reservations, users manage their own)
+o	Responsive design
+7.	Renewal Management (RenewalsPage.tsx)
+o	View and manage book renewals
+o	Renew borrowed books
+o	Role-based access (admins/librarians manage renewals, users renew their own borrowings)
+o	Responsive design
+8.	Subscription Management (SubscriptionPage.tsx)
+o	View current subscription status
+o	Upgrade or downgrade subscription tier
+o	Manage payment information
+o	Role-based access (all users can manage their subscription)
+o	Responsive design
 ✅ Key Features Implemented:
 1.	Authentication Integration
 o	Fixed login to use email instead of username
@@ -337,6 +503,15 @@ o	Admins: All features + full user management including role changes
 o	Full integration with your backend APIs
 o	Real-time data updates after operations
 o	Proper error handling with user feedback
+5.	Reservation and Renewal Integration
+o	Seamless integration of reservation and renewal features
+o	Proper handling of queue positions and renewal limits
+o	User-friendly interfaces for managing reservations and renewals
+6.	Subscription Integration
+o	Library card subscription system fully integrated
+o	Subscription management UI
+o	Real-time usage tracking and limit enforcement
+o	Tier-based borrowing limits and benefits
 
 ✅ Navigation Structure:
 •	Homepage (/) - Dashboard with overview
@@ -346,6 +521,9 @@ o	Proper error handling with user feedback
 •	Manage Users (users) - Admin/Librarian only
 •	All Borrowings (/all-borrowings) - Admin/Librarian only (placeholder)
 •	Reports (/reports) - Admin/Librarian only (placeholder)
+•	Reservations (/reservations) - Manage book reservations
+•	Renewals (/renewals) - Manage book renewals
+•	My Subscription (/my-subscription) - Manage library card subscription
 🎨 Design Features:
 •	Clean, modern UI with consistent styling
 •	Color-coded elements (book availability, user roles, borrowing status)
@@ -386,19 +564,22 @@ library-management-system/
 │   │   │               │   ├── BookController.java
 │   │   │               │   ├── UserController.java
 │   │   │               │   ├── BorrowingController.java
+│   │   │               │   ├── ReservationController.java
 │   │   │               │   └── WebController.java (for serving frontend)
 │   │   │               │
 │   │   │               ├── service/
 │   │   │               │   ├── BookService.java
 │   │   │               │   ├── UserService.java
 │   │   │               │   ├── BorrowingService.java
-│   │   │               │   └── FineService.java
+│   │   │               │   ├── FineService.java
+│   │   │               │   └── ReservationService.java
 │   │   │               │
 │   │   │               ├── repository/
 │   │   │               │   ├── BookRepository.java
 │   │   │               │   ├── UserRepository.java
 │   │   │               │   ├── BorrowingRepository.java
-│   │   │               │   └── FineRepository.java
+│   │   │               │   ├── FineRepository.java
+│   │   │               │   └── ReservationRepository.java
 │   │   │               │
 │   │   │               ├── model/
 │   │   │               │   ├── Book.java
@@ -406,12 +587,14 @@ library-management-system/
 │   │   │               │   ├── Student.java
 │   │   │               │   ├── Librarian.java
 │   │   │               │   ├── Borrowing.java
-│   │   │               │   └── Fine.java
+│   │   │               │   ├── Fine.java
+│   │   │               │   └── Reservation.java
 │   │   │               │
 │   │   │               ├── dto/
 │   │   │               │   ├── BookDTO.java
 │   │   │               │   ├── UserDTO.java
 │   │   │               │   ├── BorrowingDTO.java
+│   │   │               │   ├── ReservationDTO.java
 │   │   │               │   └── LoginRequest.java
 │   │   │               │
 │   │   │               ├── exception/
@@ -508,3 +691,15 @@ Scalable: Easy to add new features without restructuring
 Professional: Follows enterprise Java conventions
 Testable: Clear separation makes unit testing straightforward
 Maintainable: Easy to find and modify specific functionality
+
+
+
+Next Steps to Further Improve:
+✅ Implement actual reservation functionality in the backend - COMPLETED
+✅ Add renewal options for checked-out books - COMPLETED
+Create library hours and contact information section
+Add digital resources section (eBooks, databases)
+Implement reading lists and recommendations
+Add late fees and fine management
+Create librarian circulation desk interface
+Add notification system for reservations
