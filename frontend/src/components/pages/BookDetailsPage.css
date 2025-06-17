@@ -1,7 +1,7 @@
 .book-details-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   background: #f8f9fa;
   min-height: 100vh;
 }
@@ -34,7 +34,7 @@
   display: grid;
   grid-template-columns: 400px 1fr;
   gap: 3rem;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .book-image-section {
@@ -285,7 +285,7 @@
 }
 
 .related-books-section {
-  padding: 2rem;
+  padding: 1rem;
   background: #f8f9fa;
   border-top: 1px solid #ecf0f1;
 }

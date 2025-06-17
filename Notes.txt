@@ -1,0 +1,157 @@
+mvn clean install
+mvn spring-boot:run
+
+CORS Issue Between Frontend and Backend when creating frontend
+The error message you're seeing is a CORS (Cross-Origin Resource Sharing) policy issue. When your React frontend (running on http://localhost:3000) tries to make requests to your Spring Boot backend (running on http://localhost:8080), the browser blocks these requests because the backend hasn't been configured to allow cross-origin requests.
+
+Change catalog to physical catalog and move digital books to digital catalog
+Create digital book page
+Add UI to read digital books on it
+Change my borrowings in profile to borrow history and my borrowings in subscription page to book inventory (currently borrowing books) (Partly done)
+Add payment info section to subscription page (/my-subscription) (Implement in backend, Leave frontend as placeholder for later implementation of bank account, paypal and stripe) ✅ COMPLETED
+Add checkout UI and book details page ✅ COMPLETED
+Add late fees and fine management
+Add notification model
+Add chatbox for book suggestion (optional)
+Change book description data type (for longer description) ✅ COMPLETED
+Fix search bar in catalog page
+Implement reading lists and recommendations
+Create library hours and contact information footer
+All borrowings management section in admin dashboard
+
+=== PAYMENT INFO IMPLEMENTATION COMPLETED ===
+✅ Backend: Full payment info system implemented with PaymentInfo entity, repository, service, and controller
+✅ Models: PaymentMethod enum (BANK_ACCOUNT, PAYPAL, STRIPE), PaymentInfo entity with all fields
+✅ API Endpoints: Complete CRUD operations, payment method management, validation, and processing
+✅ Frontend: Payment Info tab added to subscription page with placeholder UI for all payment methods
+✅ Security: Placeholder security information section with encryption, PCI compliance notes
+✅ UI/UX: Modern card-based layout with icons, responsive design, and professional styling
+✅ Integration: fetchPaymentInfo() function integrated into SubscriptionPage component
+✅ Styling: Comprehensive CSS with mobile responsiveness and modern design patterns
+
+The payment info section is now fully functional as a placeholder, ready for future integration with actual payment processors (Stripe, PayPal, bank transfers).
+
+=== CHECKOUT UI & BOOK DETAILS IMPLEMENTATION COMPLETED ===
+✅ BookDetailsPage.tsx: Complete book details page with comprehensive information display
+✅ CheckoutPage.tsx: Full checkout flow with subscription tier checking and fine management
+✅ Fine Management: Outstanding fines detection and payment requirement before borrowing
+✅ Subscription Limits: Automatic checking of physical/digital book limits per tier
+✅ Borrow Period Selection: 7/14/21/30 day options based on subscription tier
+✅ Upgrade Flow: Redirects free tier users to subscription upgrade when limit reached
+✅ Related Books: Dynamic related books display based on category
+✅ Navigation: Seamless routing from catalog → details → checkout → subscription
+✅ URL Parameters: Tab switching and success message handling via URL params
+✅ Terms & Conditions: Borrowing terms display with agreement checkbox
+✅ Late Fee Information: $0.50/day late fee calculation and display
+✅ Mobile Responsive: Professional mobile-friendly design for all new pages
+✅ Error Handling: Comprehensive error states and user feedback
+✅ Security: Payment info validation and access control
+
+Book Details Features:
+- Comprehensive book information display
+- Availability status with color-coded indicators
+- Fine warnings that prevent borrowing until paid
+- Related books grid with navigation
+- Professional book cover display with fallbacks
+- Mobile-responsive design
+
+Checkout Features:
+- Subscription tier checking and limit enforcement
+- Borrowing period selection (7-30 days based on tier)
+- Fine detection and payment requirement
+- Terms and conditions agreement
+- Due date calculation and late fee information
+- Upgrade prompts for free tier users
+- Success redirect to subscription page
+
+The checkout system now provides a complete borrowing workflow with proper subscription management!
+
+=== LONGER BOOK DESCRIPTION IMPLEMENTATION COMPLETED ===
+✅ Backend Model Update: Updated Book.java with @Lob and @Column(columnDefinition = "TEXT") for descriptions up to 65,535 characters
+✅ Database Schema: Automatic schema update via Hibernate ddl-auto=update (no manual migration needed)
+✅ Frontend Form Enhancement: Updated BooksPage textarea from 3 rows to 8 rows with 3000 character limit
+✅ Character Counter: Added real-time character count display (0/3000 characters)
+✅ Enhanced Description UI: Improved BookDetailsPage description section with better styling and readability
+✅ Checkout Integration: Added brief description preview (150 chars) in CheckoutPage for context
+✅ Text Formatting: Enhanced CSS with better line height, text justification, and word wrapping
+✅ User Experience: Added placeholder text with guidance for comprehensive book descriptions
+✅ Visual Improvements: Added icons, better spacing, and professional styling throughout
+
+Backend Changes:
+- Book model now supports up to 65,535 characters for descriptions (MySQL TEXT type)
+- Automatic database schema update on application restart
+- No breaking changes to existing functionality
+
+Frontend Enhancements:
+- BooksPage: Enhanced description textarea with character limit and better UX
+- BookDetailsPage: Improved description display with better formatting and styling
+- CheckoutPage: Added brief description preview for better user context
+- Responsive design maintained across all components
+- Professional styling with proper typography and spacing
+
+The system now supports comprehensive book descriptions suitable for detailed plot summaries, reviews, and extensive book information!
+
+=== FOOTER AND BORROWINGS MANAGEMENT IMPLEMENTATION COMPLETED ===
+✅ Library Footer: Professional footer component with hours, contact info, quick links, and services
+✅ Responsive Design: Mobile-friendly footer layout with proper spacing and typography
+✅ Contact Information: Complete address, phone, email, and emergency contact details
+✅ Library Hours: Detailed weekly schedule with holiday notice and special hours
+✅ Quick Links: Navigation shortcuts to important library sections and policies
+✅ Service Categories: Comprehensive list of library services and offerings
+✅ App Integration: Footer properly imported and rendered in App.tsx with flex layout
+
+✅ All Borrowings Management: Complete admin section for managing library borrowings
+✅ Comprehensive Statistics: Real-time stats for total, active, overdue, returned, and fines
+✅ Advanced Filtering: Search by user, book title, author, ISBN with status filters
+✅ Smart Sorting: Multi-column sorting with ascending/descending options
+✅ Overdue Management: Automatic overdue detection with fine calculations ($0.50/day)
+✅ Return Processing: Modal-based return workflow with notes and fine handling
+✅ Data Visualization: Professional table layout with status badges and color coding
+✅ Mobile Responsive: Full responsive design for tablet and mobile devices
+✅ Admin Dashboard Integration: Seamlessly integrated into existing admin navigation
+
+Footer Features:
+- Professional library hours display with weekly schedule
+- Complete contact information with address, phone, and email
+- Quick navigation links to important library sections
+- Comprehensive service offerings list
+- Holiday hours notice and emergency contact information
+- Responsive mobile design with proper typography and spacing
+- Integrated into App.tsx with proper footer positioning
+
+All Borrowings Management Features:
+- Real-time borrowing statistics with visual stat cards
+- Advanced search and filtering capabilities
+- Multi-column sorting with visual indicators
+- Overdue item highlighting with automatic fine calculation
+- Return processing modal with notes and confirmation
+- Professional table layout with user/book information
+- Status badges for returned, active, and overdue items
+- Mobile-responsive design for all screen sizes
+- Complete integration with admin dashboard navigation
+
+The library management system now has a professional footer providing essential information and a comprehensive borrowings management system for library staff!
+
+=== BOOK CARD LAYOUT OPTIMIZATION COMPLETED ===
+✅ Grid Layout: Changed from minmax(300px, 1fr) to minmax(220px, 1fr) for 4 cards per row
+✅ Card Height Reduction: Reduced image height from 200px to 130px (35% reduction)
+✅ Content Optimization: Reduced padding from 1.5rem to 1rem for more compact design
+✅ Typography Refinement: Smaller font sizes and reduced margins for better space utilization
+✅ Responsive Design: Enhanced breakpoints for optimal display across all screen sizes
+✅ Mobile Compatibility: Maintained usability on tablets (2 cards) and phones (1 card)
+
+Book Card Layout Improvements:
+- Desktop (1200px+): 4 cards per row with 220px minimum width
+- Large screens (1025-1199px): 4 cards per row with optimal spacing
+- Medium screens (769-1024px): 3 cards per row with 250px minimum width
+- Tablets (481-768px): 2 cards per row with 280px minimum width
+- Mobile (≤480px): 1 card per row with reduced image height (120px)
+
+Design Changes:
+- Image height: 200px → 130px (2/3 reduction as requested)
+- Content padding: 1.5rem → 1rem (more compact)
+- Grid gap: 1.5rem → 1rem (tighter spacing)
+- Typography: Optimized font sizes and line heights
+- Card width: 300px minimum → 220px minimum (enables 4 cards per row)
+
+The catalog page now displays 4 book cards per row on desktop with significantly reduced height while maintaining readability and professional appearance!

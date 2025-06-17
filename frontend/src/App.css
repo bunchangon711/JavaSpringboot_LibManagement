@@ -21,6 +21,8 @@ body {
 .main-content {
   flex: 1;
   min-height: calc(100vh - 70px); /* Adjust based on navbar height */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Login and Register page styles */

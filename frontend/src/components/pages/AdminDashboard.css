@@ -221,17 +221,27 @@
   margin-bottom: 3rem;
 }
 
+/* Chart Container Styles */
 .chart-container {
   background: white;
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .chart-container h3 {
   color: #2c3e50;
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Activity Section */
@@ -361,53 +371,7 @@
   justify-content: center;
   height: 100vh;
   font-size: 1.2rem;
-  color: #7f8c8d;
-  background: white;
-}
-
-/* Chart Placeholder Styles */
-.chart-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 300px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  border: 2px dashed #dee2e6;
-}
-
-.placeholder-content {
-  text-align: center;
-  color: #6c757d;
-}
-
-.placeholder-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.placeholder-content p {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  font-weight: 500;
-}
-
-.mock-data {
-  text-align: left;
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.data-row {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #e9ecef;
-  font-size: 0.9rem;
-}
-
-.data-row:last-child {
-  border-bottom: none;
+  color: #7f8c8d;  background: white;
 }
 
 /* Management Components Integration Styles */

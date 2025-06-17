@@ -1,10 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './components/auth/AuthContext';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 import HomePage from './components/pages/HomePage';
 import BooksPage from './components/pages/BooksPage';
 import BookDetailsPage from './components/pages/BookDetailsPage';
@@ -23,6 +24,18 @@ const Unauthorized = () => (
     <p>You don't have permission to access this page.</p>
   </div>
 );
+
+// Component to conditionally render Footer
+const ConditionalFooter: React.FC = () => {
+  const location = useLocation();
+  const hideFooterRoutes = ['/admin-dashboard'];
+  
+  if (hideFooterRoutes.includes(location.pathname)) {
+    return null;
+  }
+  
+  return <Footer />;
+};
 
 function App() {
   return (
@@ -50,11 +63,11 @@ function App() {
                 <Route path="/all-borrowings" element={<AllBorrowings />} />
                 <Route path="/reports" element={<Reports />} />
               </Route>
-              
-              {/* Redirect any unmatched routes to home */}
+                {/* Redirect any unmatched routes to home */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
+          <ConditionalFooter />
         </div>
       </Router>
     </AuthProvider>
