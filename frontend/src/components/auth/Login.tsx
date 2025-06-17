@@ -38,49 +38,53 @@ const Login: React.FC = () => {
       console.error('Login failed');
     }
   };
-
   return (
-    <div className="login-container">
-      <h2>Login to Library Management System</h2>
-      
-      {/* Display error messages */}
-      {(formError || error) && (
-        <div className="error-message">
-          {formError || error}
-        </div>
-      )}
-      
-      <form onSubmit={handleSubmit}>        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-          />
-        </div>
+    <div className="auth-page">
+      <div className="login-container">
+        <h2>Welcome Back</h2>
         
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={loading}
-          />
-        </div>
+        {/* Display error messages */}
+        {(formError || error) && (
+          <div className="error-message">
+            {formError || error}
+          </div>
+        )}
         
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-      
-      <div className="login-footer">
-        <p>
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              placeholder="Enter your email"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              placeholder="Enter your password"
+            />
+          </div>
+          
+          <button type="submit" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+        </form>
+        
+        <div className="login-footer">
+          <p>
+            Don't have an account? <Link to="/register">Create Account</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

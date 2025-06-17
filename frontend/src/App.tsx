@@ -28,7 +28,7 @@ const Unauthorized = () => (
 // Component to conditionally render Footer
 const ConditionalFooter: React.FC = () => {
   const location = useLocation();
-  const hideFooterRoutes = ['/admin-dashboard'];
+  const hideFooterRoutes = ['/admin-dashboard', '/login', '/register'];
   
   if (hideFooterRoutes.includes(location.pathname)) {
     return null;

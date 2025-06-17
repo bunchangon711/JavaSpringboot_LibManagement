@@ -58,82 +58,90 @@ const Register: React.FC = () => {
       console.error('Registration failed');
     }
   };
-
   if (registrationSuccess) {
     return (
-      <div className="register-success">
-        <h2>Registration Successful!</h2>
-        <p>You can now login with your credentials.</p>
-        <p>Redirecting to login page...</p>
+      <div className="auth-page">
+        <div className="register-success">
+          <h2>🎉 Registration Successful!</h2>
+          <p>Welcome to our library management system!</p>
+          <p>You can now sign in with your credentials.</p>
+          <p>Redirecting to login page...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="register-container">
-      <h2>Create an Account</h2>
-      
-      {/* Display error messages */}
-      {(formError || error) && (
-        <div className="error-message">
-          {formError || error}
-        </div>
-      )}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            disabled={loading}
-          />
-        </div>
+    <div className="auth-page">
+      <div className="register-container">
+        <h2>Create Account</h2>
         
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-          />
-        </div>
+        {/* Display error messages */}
+        {(formError || error) && (
+          <div className="error-message">
+            {formError || error}
+          </div>
+        )}
         
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={loading}
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={loading}
+              placeholder="Choose a username"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              placeholder="Enter your email"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              placeholder="Create a password (min 6 characters)"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="confirm-password">Confirm Password</label>
+            <input
+              type="password"
+              id="confirm-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={loading}
+              placeholder="Confirm your password"
+            />
+          </div>
+          
+          <button type="submit" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </button>
+        </form>
         
-        <div className="form-group">
-          <label htmlFor="confirm-password">Confirm Password</label>
-          <input
-            type="password"
-            id="confirm-password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            disabled={loading}
-          />
+        <div className="register-footer">
+          <p>
+            Already have an account? <Link to="/login">Sign In</Link>
+          </p>
         </div>
-        
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-      </form>
-      
-      <div className="register-footer">
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
       </div>
     </div>
   );

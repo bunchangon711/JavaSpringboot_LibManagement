@@ -328,7 +328,7 @@
 .subscription-info {
   margin-top: 1rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   border-radius: 12px;
   color: white;
   display: inline-block;

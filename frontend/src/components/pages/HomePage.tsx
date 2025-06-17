@@ -100,7 +100,7 @@ const HomePage: React.FC = () => {
         <p>Hello, <strong>{currentUser?.name}</strong>! Your library subscription is active and ready to use.</p>        <div className="subscription-info">
           <div className="subscription-status">
             <span className="subscription-icon">💳</span>
-            <span>Subscription: Active</span>
+            <span className="membership-status">Subscription: Active</span>
             <span className="membership-type">Digital Member</span>
           </div>
         </div>
