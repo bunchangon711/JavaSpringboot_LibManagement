@@ -276,8 +276,7 @@ const CheckoutPage: React.FC = () => {
               ) : (
                 <div className="no-image">📖</div>
               )}
-            </div>
-            <div className="book-summary-info">
+            </div>            <div className="book-summary-info">
               <h2>{book.title}</h2>
               <p className="author">by {book.author}</p>
               <div className="book-details">
@@ -285,6 +284,11 @@ const CheckoutPage: React.FC = () => {
                 <p><strong>Category:</strong> {book.category}</p>
                 {book.location && <p><strong>Location:</strong> {book.location}</p>}
               </div>
+              {book.description && (
+                <div className="book-brief-description">
+                  <p>{book.description.length > 150 ? `${book.description.substring(0, 150)}...` : book.description}</p>
+                </div>
+              )}
             </div>
           </div>
 

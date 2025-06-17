@@ -414,15 +414,23 @@ const BooksPage: React.FC = () => {
                 onChange={(e) => setFormData({...formData, location: e.target.value})}
               />
             </div>
-            
-            <div className="form-row">
-              <textarea
-                placeholder="Book Description/Summary"
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                rows={3}
-                className="description-textarea"
-              />
+              <div className="form-row">
+              <div className="description-field">
+                <label className="description-label">
+                  Book Description/Summary
+                  <span className="char-count">
+                    {formData.description.length}/3000 characters
+                  </span>
+                </label>
+                <textarea
+                  placeholder="Enter a detailed description of the book, including plot summary, themes, target audience, and any other relevant information..."
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={8}
+                  maxLength={3000}
+                  className="description-textarea"
+                />
+              </div>
             </div>
             
             <div className="form-row">

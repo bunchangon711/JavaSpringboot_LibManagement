@@ -410,6 +410,25 @@
 }
 
 /* New form field styles */
+.description-field {
+  width: 100%;
+}
+
+.description-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.char-count {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  font-weight: 400;
+}
+
 .description-textarea {
   width: 100%;
   padding: 0.75rem;
@@ -418,7 +437,8 @@
   font-family: inherit;
   font-size: 1rem;
   resize: vertical;
-  min-height: 80px;
+  min-height: 120px;
+  line-height: 1.4;
 }
 
 .description-textarea:focus {

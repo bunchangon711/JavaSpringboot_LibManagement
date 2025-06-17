@@ -46,10 +46,11 @@ public class Book {
     
     // Library-specific fields
     private String callNumber; // Library classification number (like Dewey Decimal)
+      private String location; // Physical location in library (e.g., "Floor 2, Section A")
     
-    private String location; // Physical location in library (e.g., "Floor 2, Section A")
-    
-    private String description; // Book summary/description
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String description; // Book summary/description (supports up to 65,535 characters)
       private Boolean isReference = false; // Reference books cannot be checked out
     
     private Integer loanPeriodDays = 14; // Default checkout period

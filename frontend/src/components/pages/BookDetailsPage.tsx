@@ -300,11 +300,9 @@ const BookDetailsPage: React.FC = () => {
                   </div>
                 )}
               </div>
-            </div>
-
-            {book.description && (
+            </div>            {book.description && (
               <div className="book-description">
-                <h3>Description</h3>
+                <h3>About This Book</h3>
                 <p>{book.description}</p>
               </div>
             )}

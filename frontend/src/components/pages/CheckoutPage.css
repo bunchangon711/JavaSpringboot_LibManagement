@@ -103,6 +103,20 @@
   font-size: 0.9rem;
 }
 
+.book-brief-description {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ecf0f1;
+}
+
+.book-brief-description p {
+  color: #666;
+  font-style: italic;
+  line-height: 1.4;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
 .checkout-options {
   display: flex;
   flex-direction: column;
