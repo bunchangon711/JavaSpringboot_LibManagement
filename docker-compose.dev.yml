@@ -1,0 +1,73 @@
+# Development environment with hot reload
+
+services:
+  # MySQL Database
+  database:
+    image: mysql:8.0
+    container_name: lib-management-db-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Htkhoi71103
+      MYSQL_DATABASE: librarydb
+      MYSQL_USER: libuser
+      MYSQL_PASSWORD: libpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    networks:
+      - lib-management-dev-network
+
+  # Spring Boot Backend (Development)
+  backend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: build  # Stop at build stage for development    container_name: lib-management-backend-dev
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/librarydb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: libuser
+      SPRING_DATASOURCE_PASSWORD: libpassword
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Debug port
+    depends_on:
+      - database
+    networks:
+      - lib-management-dev-network
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    command: ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
+
+  # React Frontend (Development)
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: lib-management-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-dev
+    networks:
+      - lib-management-dev-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost:8080
+
+volumes:
+  mysql_dev_data:
+    driver: local
+  maven_cache:
+    driver: local
+
+networks:
+  lib-management-dev-network:
+    driver: bridge

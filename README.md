@@ -4,6 +4,7 @@ A comprehensive digital library management system built with Spring Boot and Rea
 
 ## 🔧 Tech Stack
 
+### Frontend
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chart.js&logoColor=white)](https://www.chartjs.org/)
@@ -16,9 +17,12 @@ A comprehensive digital library management system built with Spring Boot and Rea
 [![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=Cloudinary&logoColor=white)](https://cloudinary.com/)
 
-### Development Tools
+### Development Tools & Infrastructure
 [![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)](https://git-scm.com/)
 [![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
 
 ## 🌟 Features
 
@@ -63,6 +67,15 @@ A comprehensive digital library management system built with Spring Boot and Rea
 - **Payment Integration**: Secure payment processing for subscriptions
 - **Subscription Status**: Real-time subscription status tracking
 
+### 🐳 Containerization & Deployment
+- **Docker Support**: Complete containerization with multi-stage builds
+- **Development Environment**: Hot reload enabled development containers
+- **Production Ready**: Optimized production Docker images
+- **Service Orchestration**: Docker Compose for multi-service management
+- **Health Monitoring**: Built-in health checks for all services
+- **Load Balancing**: Nginx reverse proxy configuration
+- **Data Persistence**: Volume management for databases and logs
+
 ### 🎨 Modern User Interface
 - **Responsive Design**: Mobile-first, responsive design for all devices
 - **Professional UI/UX**: Clean, modern interface with intuitive navigation
@@ -99,6 +112,9 @@ A comprehensive digital library management system built with Spring Boot and Rea
 - **Code Quality**: TypeScript, ESLint configuration
 - **Version Control**: Git
 - **Package Management**: npm, Maven
+- **Containerization**: Docker & Docker Compose
+- **Reverse Proxy**: Nginx for load balancing and static file serving
+- **Caching**: Redis for session management and performance optimization
 
 ## 🏗️ Architecture
 
@@ -149,15 +165,31 @@ graph TB
         D --> D3
         D --> D4
     end
-    
-    subgraph "Cloud Services"
+      subgraph "Cloud Services"
         E[Cloudinary]
+    end
+    
+    subgraph "Container Infrastructure"
+        F[Docker Containers]
+        F1[Frontend Container - Nginx]
+        F2[Backend Container - Spring Boot]
+        F3[Database Container - MySQL]
+        F4[Cache Container - Redis]
+        
+        F --> F1
+        F --> F2
+        F --> F3
+        F --> F4
     end
     
     A -->|HTTP/HTTPS| B
     B -->|REST API| C
     C -->|JDBC/JPA| D
     C -->|Image Upload| E
+    
+    B -.->|Containerized| F1
+    C -.->|Containerized| F2
+    D -.->|Containerized| F3
 ```
 
 ### Data Flow Diagram
@@ -264,7 +296,74 @@ graph LR
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Quick Start with Docker
+
+#### Prerequisites
+- Docker Desktop (Windows/Mac) or Docker Engine (Linux)
+- Docker Compose v2.0+
+- At least 4GB RAM available for containers
+
+#### Using Docker Scripts
+
+**Windows (PowerShell):**
+```powershell
+# Production environment
+.\docker-setup.bat prod
+
+# Development environment (with hot reload)
+.\docker-setup.bat dev
+
+# View status and health checks
+.\docker-setup.bat status
+
+# View logs
+.\docker-setup.bat logs
+
+# Stop all services
+.\docker-setup.bat stop
+```
+
+#### Using Docker Compose Directly 
+
+**Production Environment:**
+```bash
+# Start all services
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+**Development Environment:** (Recommended)
+```bash
+# Start with hot reload
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
+```
+
+#### Access Points
+
+**Production Mode:**
+- Frontend: http://localhost (port 80)
+- Backend API: http://localhost:8080
+- Database: localhost:3307 (external access)
+
+**Development Mode:**
+- Frontend: http://localhost:3000 (with hot reload)
+- Backend API: http://localhost:8080
+- Backend Debug: localhost:5005 (Java debug port)
+- Database: localhost:3307
+
+---
+
+### Traditional Setup (Without Docker)
+
+#### Prerequisites
 - Java 17 or higher
 - Node.js 16+ and npm
 - MySQL 8.0+
@@ -316,6 +415,78 @@ graph LR
 4. **Access the application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8080
+
+---
+
+## 🐳 Docker Setup
+
+### Quick Start Commands
+
+**Windows (PowerShell):**
+```powershell
+# Test Docker setup (recommended first step)
+.\docker-test.bat
+
+# Production environment
+.\docker-setup.bat prod
+
+# Development environment
+.\docker-setup.bat dev
+
+# Check status
+.\docker-setup.bat status
+```
+
+**Linux/Mac:**
+```bash
+# Test Docker setup
+chmod +x docker-test.sh
+./docker-test.sh
+
+# Production environment
+chmod +x docker-setup.sh
+./docker-setup.sh prod
+```
+
+### Common Issues & Solutions
+
+#### 1. **Docker Image Not Found Errors**
+```
+failed to solve: openjdk:17-jre-slim: not found
+```
+**Solution**: Updated to use `eclipse-temurin:17-jre` (latest stable OpenJDK image)
+
+#### 2. **Frontend Build Fails (User Creation Error)**
+```
+addgroup: group 'nginx' in use
+```
+**Solution**: Fixed Dockerfile to not recreate existing nginx user
+
+#### 3. **Build Dependencies Missing**
+```
+npm ci --only=production
+```
+**Solution**: Changed to `npm ci` to include dev dependencies needed for build
+
+#### 4. **Port Conflicts**
+If you see port already in use errors:
+```powershell
+# Check what's using the port
+netstat -ano | findstr :8080  # Windows
+lsof -i :8080                 # Linux/Mac
+
+# Change ports in docker-compose.yml if needed
+```
+
+#### 5. **Version Attribute Warning**
+```
+the attribute `version` is obsolete
+```
+**Solution**: Removed obsolete `version: '3.8'` from docker-compose files
+
+For detailed Docker documentation, see [DOCKER.md](DOCKER.md).
+
+---
 
 ## 📱 API Endpoints
 
