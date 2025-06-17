@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../auth/AuthContext';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import API from '../../services/api';
 import { uploadImage, generateOptimizedImageUrl } from '../../services/cloudinaryService';
 import Pagination from '../common/Pagination';
@@ -36,6 +36,7 @@ interface PagedResponse<T> {
 const BooksPage: React.FC = () => {
   const { currentUser } = useAuth();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -148,23 +149,22 @@ const BooksPage: React.FC = () => {
     } finally {
       setUploading(false);
     }
-  };
-  const handleBorrowBook = async (bookId: number) => {
-    if (!currentUser?.id) return;
+  };  // const handleBorrowBook = async (bookId: number) => {
+  //   if (!currentUser?.id) return;
 
-    try {
-      await API.post('/borrowings', {
-        userId: currentUser.id,
-        bookId: bookId
-      });
+  //   try {
+  //     await API.post('/borrowings', {
+  //       userId: currentUser.id,
+  //       bookId: bookId
+  //     });
       
-      fetchBooks(); // Refresh to update available copies
-      alert('Book checked out successfully! Please return it by the due date.');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to check out book';
-      alert(errorMessage);
-    }
-  };
+  //     fetchBooks(); // Refresh to update available copies
+  //     alert('Book checked out successfully! Please return it by the due date.');
+  //   } catch (error: any) {
+  //     const errorMessage = error.response?.data?.message || 'Failed to check out book';
+  //     alert(errorMessage);
+  //   }
+  // };
   const handleReserveBook = async (bookId: number) => {
     if (!currentUser?.id) return;
     
@@ -180,27 +180,8 @@ const BooksPage: React.FC = () => {
       const errorMessage = error.response?.data?.message || 'Failed to place reservation';
       alert(errorMessage);
     }
-  };
-  const handleViewDetails = (bookId: number) => {    const book = books.find(b => b.id === bookId);
-    if (book) {
-      const details = `
-Title: ${book.title}
-Author: ${book.author}
-ISBN: ${book.isbn}
-Publisher: ${book.publisher}
-Category: ${book.category}
-Publication Date: ${book.publicationDate}
-${book.callNumber ? `Call Number: ${book.callNumber}` : ''}
-${book.location ? `Location: ${book.location}` : ''}
-${book.description ? `Description: ${book.description}` : ''}
-Book Type: ${book.bookType === 'DIGITAL' ? 'Digital' : 'Physical'}
-Type: ${book.isReference ? 'Reference Only' : 'Circulating'}
-Loan Period: ${book.loanPeriodDays || 14} days
-Total Copies: ${book.totalCopies}
-Available Copies: ${book.availableCopies}
-      `;
-      alert(details);
-    }
+  };  const handleViewDetails = (bookId: number) => {
+    navigate(`/books/${bookId}`);
   };
 
   const handleAddBook = async (e: React.FormEvent) => {
@@ -578,10 +559,9 @@ Available Copies: ${book.availableCopies}
                       disabled
                     >
                       📚 Reference Only
-                    </button>
-                  ) : book.availableCopies > 0 ? (
+                    </button>                  ) : book.availableCopies > 0 ? (
                     <button 
-                      onClick={() => handleBorrowBook(book.id)}
+                      onClick={() => navigate(`/checkout/${book.id}`)}
                       className="btn btn-primary btn-sm checkout-btn"
                     >
                       📖 Check Out

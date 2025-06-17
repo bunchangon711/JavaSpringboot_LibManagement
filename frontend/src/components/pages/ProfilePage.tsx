@@ -177,7 +177,7 @@ const ProfilePage: React.FC = () => {
             className={`tab-btn ${activeTab === 'borrowings' ? 'active' : ''}`}
             onClick={() => setActiveTab('borrowings')}
           >
-            My Borrowings
+            Borrow history
           </button>
           <button 
             className={`tab-btn ${activeTab === 'reservations' ? 'active' : ''}`}

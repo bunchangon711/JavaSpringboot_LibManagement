@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import API from '../../services/api';
 import './SubscriptionPage.css';
@@ -40,24 +41,49 @@ interface Borrowing {
   maxRenewals: number;
 }
 
+interface PaymentInfo {
+  id: number;
+  paymentMethod: string;
+  isActive: boolean;
+  isDefault: boolean;
+  displayInfo: string;
+  maskedAccountInfo: string;
+  isExpired?: boolean;
+}
+
 const SubscriptionPage: React.FC = () => {
   const { currentUser } = useAuth();
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [searchParams] = useSearchParams();const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [tiers, setTiers] = useState<{[key: string]: SubscriptionTier}>({});
   const [borrowings, setBorrowings] = useState<Borrowing[]>([]);
+  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'borrowings' | 'upgrade'>('overview');
-  useEffect(() => {
+  const [activeTab, setActiveTab] = useState<'overview' | 'borrowings' | 'upgrade' | 'payment'>('overview');  useEffect(() => {
     const fetchData = async () => {
       if (currentUser?.id) {
         await fetchUserSubscription();
         await fetchTierInfo();
         await fetchBorrowings();
+        await fetchPaymentInfo();
       }
     };
     
     fetchData();
-  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
+    
+    // Handle URL parameters
+    const tab = searchParams.get('tab') as 'overview' | 'borrowings' | 'upgrade' | 'payment';
+    if (tab && ['overview', 'borrowings', 'upgrade', 'payment'].includes(tab)) {
+      setActiveTab(tab);
+    }
+    
+    // Show success message if redirected from checkout
+    const success = searchParams.get('success');
+    if (success === 'true') {
+      setTimeout(() => {
+        alert('Book checked out successfully! You can view your borrowed books below.');
+      }, 500);
+    }
+  }, [currentUser, searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchUserSubscription = async () => {
     try {
@@ -83,7 +109,6 @@ const SubscriptionPage: React.FC = () => {
       console.error('Error fetching tier info:', error);
     }
   };
-
   const fetchBorrowings = async () => {
     try {
       const response = await API.get(`/borrowings/user/${currentUser?.id}`);
@@ -92,6 +117,17 @@ const SubscriptionPage: React.FC = () => {
       console.error('Error fetching borrowings:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPaymentInfo = async () => {
+    try {
+      const response = await API.get(`/payment-info/user/${currentUser?.id}`);
+      setPaymentInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching payment info:', error);
+      // Payment info might not exist, which is fine
+      setPaymentInfo(null);
     }
   };
 
@@ -175,13 +211,18 @@ const SubscriptionPage: React.FC = () => {
           className={`tab ${activeTab === 'borrowings' ? 'active' : ''}`}
           onClick={() => setActiveTab('borrowings')}
         >
-          My Borrowings
-        </button>
-        <button 
+          Book inventory
+        </button>        <button 
           className={`tab ${activeTab === 'upgrade' ? 'active' : ''}`}
           onClick={() => setActiveTab('upgrade')}
         >
           Upgrade Plan
+        </button>
+        <button 
+          className={`tab ${activeTab === 'payment' ? 'active' : ''}`}
+          onClick={() => setActiveTab('payment')}
+        >
+          Payment Info
         </button>
       </div>
 
@@ -316,6 +357,133 @@ const SubscriptionPage: React.FC = () => {
               )}
             </div>
           )}
+        </div>      )}
+
+      {activeTab === 'payment' && (
+        <div className="payment-tab">
+          <h2>Payment Information</h2>
+          
+          {paymentInfo ? (
+            <div className="payment-info-container">
+              <div className="current-payment-method">
+                <div className="payment-header">
+                  <h3>Current Payment Method</h3>
+                  <div className={`payment-status ${paymentInfo.isActive ? 'active' : 'inactive'}`}>
+                    {paymentInfo.isActive ? '✅ Active' : '❌ Inactive'}
+                  </div>
+                </div>
+                
+                <div className="payment-details">
+                  <div className="payment-method-card">
+                    <div className="method-icon">
+                      {paymentInfo.paymentMethod === 'BANK_ACCOUNT' && '🏦'}
+                      {paymentInfo.paymentMethod === 'PAYPAL' && '💙'}
+                      {paymentInfo.paymentMethod === 'STRIPE' && '💳'}
+                    </div>
+                    <div className="method-info">
+                      <h4>
+                        {paymentInfo.paymentMethod === 'BANK_ACCOUNT' && 'Bank Account'}
+                        {paymentInfo.paymentMethod === 'PAYPAL' && 'PayPal'}
+                        {paymentInfo.paymentMethod === 'STRIPE' && 'Credit/Debit Card'}
+                      </h4>
+                      <p className="masked-info">{paymentInfo.maskedAccountInfo}</p>
+                      <p className="display-info">{paymentInfo.displayInfo}</p>
+                      {paymentInfo.isExpired && (
+                        <p className="expired-warning">⚠️ This payment method has expired</p>
+                      )}
+                    </div>
+                    <div className="method-actions">
+                      <button className="btn btn-secondary btn-sm">Update</button>
+                      {paymentInfo.isActive ? (
+                        <button className="btn btn-warning btn-sm">Deactivate</button>
+                      ) : (
+                        <button className="btn btn-primary btn-sm">Reactivate</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="payment-actions-section">
+                <h3>Manage Payment Methods</h3>
+                <div className="payment-options">
+                  <button className="btn btn-outline">Change Payment Method</button>
+                  <button className="btn btn-outline">Add Backup Method</button>
+                  <button className="btn btn-danger-outline">Remove Payment Info</button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="no-payment-info">
+              <div className="empty-state">
+                <div className="empty-icon">💳</div>
+                <h3>No Payment Information</h3>
+                <p>Add a payment method to continue with paid subscriptions and process automatic renewals.</p>
+                
+                <div className="add-payment-section">
+                  <h4>Choose a Payment Method:</h4>
+                  <div className="payment-method-options">
+                    <div className="payment-option-card">
+                      <div className="option-icon">🏦</div>
+                      <div className="option-info">
+                        <h5>Bank Account</h5>
+                        <p>Direct bank transfer (ACH)</p>
+                        <small>• Low fees • Secure • 1-3 business days</small>
+                      </div>
+                      <button className="btn btn-outline">Add Bank Account</button>
+                    </div>
+                    
+                    <div className="payment-option-card">
+                      <div className="option-icon">💙</div>
+                      <div className="option-info">
+                        <h5>PayPal</h5>
+                        <p>PayPal account payment</p>
+                        <small>• Instant • Buyer protection • Global</small>
+                      </div>
+                      <button className="btn btn-outline">Connect PayPal</button>
+                    </div>
+                    
+                    <div className="payment-option-card">
+                      <div className="option-icon">💳</div>
+                      <div className="option-info">
+                        <h5>Credit/Debit Card</h5>
+                        <p>Visa, Mastercard, American Express</p>
+                        <small>• Instant • Widely accepted • Rewards</small>
+                      </div>
+                      <button className="btn btn-outline">Add Card</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className="payment-security-info">
+            <h3>🔒 Security & Privacy</h3>
+            <div className="security-features">
+              <div className="security-item">
+                <span className="security-icon">🛡️</span>
+                <div>
+                  <strong>Bank-level encryption</strong>
+                  <p>All payment data is encrypted using industry-standard SSL/TLS protocols.</p>
+                </div>
+              </div>
+              <div className="security-item">
+                <span className="security-icon">🔐</span>
+                <div>
+                  <strong>PCI DSS Compliant</strong>
+                  <p>We meet the highest standards for handling payment card information.</p>
+                </div>
+              </div>
+              <div className="security-item">
+                <span className="security-icon">👁️</span>
+                <div>
+                  <strong>No data storage</strong>
+                  <p>We don't store full card numbers or sensitive banking details on our servers.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -360,7 +528,147 @@ const SubscriptionPage: React.FC = () => {
                   )}
                 </div>
               </div>
-            ))}
+            ))}          </div>
+        </div>
+      )}
+
+      {activeTab === 'payment' && (
+        <div className="payment-tab">
+          <h2>Payment Information</h2>
+          
+          {paymentInfo ? (
+            <div className="payment-info-container">
+              <div className="current-payment-method">
+                <div className="payment-header">
+                  <h3>Current Payment Method</h3>
+                  <div className={`payment-status ${paymentInfo.isActive ? 'active' : 'inactive'}`}>
+                    {paymentInfo.isActive ? '✅ Active' : '❌ Inactive'}
+                  </div>
+                </div>
+                
+                <div className="payment-method-card">
+                  <div className="method-icon">
+                    {paymentInfo.paymentMethod === 'BANK_ACCOUNT' && '🏦'}
+                    {paymentInfo.paymentMethod === 'PAYPAL' && '💰'}
+                    {paymentInfo.paymentMethod === 'STRIPE' && '💳'}
+                  </div>
+                  
+                  <div className="method-info">
+                    <h4>
+                      {paymentInfo.paymentMethod === 'BANK_ACCOUNT' && 'Bank Account'}
+                      {paymentInfo.paymentMethod === 'PAYPAL' && 'PayPal'}
+                      {paymentInfo.paymentMethod === 'STRIPE' && 'Credit/Debit Card'}
+                    </h4>
+                    <p className="masked-info">{paymentInfo.maskedAccountInfo}</p>
+                    <p>Added: {formatDate(paymentInfo.displayInfo)}</p>
+                    {paymentInfo.isExpired && (
+                      <p className="expired-warning">⚠️ This payment method has expired</p>
+                    )}
+                  </div>
+                  
+                  <div className="method-actions">
+                    <button className="btn btn-secondary btn-sm">Update</button>
+                    {paymentInfo.isActive ? (
+                      <button className="btn btn-warning btn-sm">Deactivate</button>
+                    ) : (
+                      <button className="btn btn-primary btn-sm">Activate</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="payment-actions-section">
+                <h3>Payment Actions</h3>
+                <div className="payment-options">
+                  <button className="btn btn-outline">Update Payment Method</button>
+                  <button className="btn btn-outline">Add Backup Method</button>
+                  <button className="btn btn-danger-outline">Remove Payment Method</button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="no-payment-info">
+              <div className="empty-state">
+                <div className="empty-icon">💳</div>
+                <h3>No Payment Method Added</h3>
+                <p>
+                  To enjoy premium features and maintain your subscription, please add a payment method. 
+                  All payment information is securely encrypted and protected.
+                </p>
+                
+                <div className="add-payment-section">
+                  <h4>Choose Your Payment Method</h4>
+                  <div className="payment-method-options">
+                    <div className="payment-option-card">
+                      <div className="option-icon">🏦</div>
+                      <div className="option-info">
+                        <h5>Bank Account</h5>
+                        <p>Direct bank transfer (ACH)</p>
+                        <small>Low fees, 1-3 business days processing</small>
+                        <button className="btn btn-outline btn-sm">Add Bank Account</button>
+                      </div>
+                    </div>
+                    
+                    <div className="payment-option-card">
+                      <div className="option-icon">💰</div>
+                      <div className="option-info">
+                        <h5>PayPal</h5>
+                        <p>Use your PayPal account</p>
+                        <small>Instant processing, PayPal fees apply</small>
+                        <button className="btn btn-outline btn-sm">Connect PayPal</button>
+                      </div>
+                    </div>
+                    
+                    <div className="payment-option-card">
+                      <div className="option-icon">💳</div>
+                      <div className="option-info">
+                        <h5>Credit/Debit Card</h5>
+                        <p>Visa, Mastercard, American Express</p>
+                        <small>Instant processing, secure via Stripe</small>
+                        <button className="btn btn-outline btn-sm">Add Card</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className="payment-security-info">
+            <h3>🔒 Your Payment Security</h3>
+            <div className="security-features">
+              <div className="security-item">
+                <div className="security-icon">🛡️</div>
+                <div>
+                  <strong>256-bit SSL Encryption</strong>
+                  <p>All payment data is encrypted using industry-standard SSL encryption protocols.</p>
+                </div>
+              </div>
+              
+              <div className="security-item">
+                <div className="security-icon">🏅</div>
+                <div>
+                  <strong>PCI DSS Compliant</strong>
+                  <p>We meet the highest security standards for handling payment card information.</p>
+                </div>
+              </div>
+              
+              <div className="security-item">
+                <div className="security-icon">🔐</div>
+                <div>
+                  <strong>No Stored Card Details</strong>
+                  <p>We never store your full payment details on our servers. All sensitive data is tokenized.</p>
+                </div>
+              </div>
+              
+              <div className="security-item">
+                <div className="security-icon">📱</div>
+                <div>
+                  <strong>Two-Factor Authentication</strong>
+                  <p>Additional security layer for payment method changes and sensitive operations.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

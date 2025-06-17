@@ -7,6 +7,8 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import Navbar from './components/layout/Navbar';
 import HomePage from './components/pages/HomePage';
 import BooksPage from './components/pages/BooksPage';
+import BookDetailsPage from './components/pages/BookDetailsPage';
+import CheckoutPage from './components/pages/CheckoutPage';
 import ProfilePage from './components/pages/ProfilePage';
 import SubscriptionPage from './components/pages/SubscriptionPage';
 import AdminDashboard from './components/pages/AdminDashboard';
@@ -33,11 +35,12 @@ function App() {
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/unauthorized" element={<Unauthorized />} />
-                {/* Protected routes - require authentication */}
+              <Route path="/unauthorized" element={<Unauthorized />} />              {/* Protected routes - require authentication */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/books" element={<BooksPage />} />
+                <Route path="/books/:bookId" element={<BookDetailsPage />} />
+                <Route path="/checkout/:bookId" element={<CheckoutPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/my-subscription" element={<SubscriptionPage />} />
               </Route>{/* Protected routes with specific role requirements */}
