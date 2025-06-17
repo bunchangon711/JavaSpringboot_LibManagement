@@ -13,11 +13,18 @@ frontend/node_modules/ linguist-generated
 # Ensure Java files are properly detected
 *.java linguist-language=Java
 
-# Mark frontend files appropriately but with lower priority
-frontend/src/**/*.tsx linguist-language=TypeScript
-frontend/src/**/*.ts linguist-language=TypeScript
-frontend/src/**/*.js linguist-language=JavaScript
-frontend/src/**/*.css linguist-language=CSS
+# Exclude TypeScript files from language detection to prioritize Java
+*.ts linguist-detectable=false
+*.tsx linguist-detectable=false
+
+# Mark frontend directory as vendored to exclude from language stats
+frontend/* linguist-vendored=true
+
+# Mark frontend files appropriately but exclude from stats
+frontend/src/**/*.tsx linguist-vendored=true
+frontend/src/**/*.ts linguist-vendored=true
+frontend/src/**/*.js linguist-vendored=true
+frontend/src/**/*.css linguist-vendored=true
 
 # Mark Maven wrapper and config files as vendored
 mvnw linguist-vendored
